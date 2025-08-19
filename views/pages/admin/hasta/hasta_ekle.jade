@@ -10,37 +10,59 @@ block content
                 .card-body
                     .row.mb-2
                         .col-12.col-md-4.mb-2.mb-md-0
-                            label(for="hastaAdi") Hasta Adı 
-                            input#hastaAdi(type="text" name="hastaAdi" placeholder="Hasta adı giriniz").form-control.border-0
+                            label(for="hastaAdi")
+                                | Hasta Adı
+                                span(title="Zorunlu").text-danger *
+                            input#hastaAdi(type="text" name="hastaAdi" placeholder="Hasta adı giriniz").form-control
                         .col-12.col-md-4
-                            label(for="tani") Tanı
-                            input#tani(type="text" name="tani" placeholder="Hasta tanısını giriniz").form-control.border-0
+                            label(for="islem")
+                                | İşlem Seçiniz
+                                span(title="Zorunlu").text-danger *
+                            select#islem(name="islem").form-control
+                                option(selected disabled) İşlem Seçiniz 
+                                option(value="discekimi") Diş Çekimi
+                                option(value="kanaltedavi") Kanal Tedavi
+
                         .col-6.col-md-2
-                            label(for="ucret") Ücret
-                            input#ucret(type="number" name="ucret" placeholder="0").form-control.border-0
+                            label(for="ucret")
+                                | Ücret
+                                span(title="Zorunlu").text-danger *
+                            input#ucret(type="number" name="ucret" placeholder="0").form-control
                         .col-6.col-md-2
-                            label(for="odenen") Ödenen Miktar
-                            input#odenen(type="number" name="odenen" placeholder="0").form-control.border-0
+                            label(for="odenen")
+                                | Ödenen Miktar
+                                span(title="Zorunlu").text-danger *
+                            input#odenen(type="number" name="odenen" placeholder="0").form-control
                     .row.mb-2
                         .col-12
-                            label(for="aciklama") Tanı Açıklaması
-                            textarea#aciklama(name="aciklama").form-control.border-0
+                            label(for="aciklama")
+                                | İşleme Dair Not
+                                span(title="Zorunlu").text-danger *
+                            textarea#aciklama(name="aciklama").form-control
                     .row.mb-2
                         .col-12.col-md-3.mb-2.mb-md-0
-                            label(for="doktorAdi") Doktor Seçiniz
-                            select#doktorAdi(name="doktorAdi").form-control.border-0
+                            label(for="doktorAdi")
+                                | Doktor Seçiniz
+                                span(title="Zorunlu").text-danger *
+                            select#doktorAdi(name="doktorAdi").form-control
                                 option(value="onur") Onur YOLBAŞ
                                 option(value="servet") Servet TOPRAK
                                 option(value="sedat") Sedat ARABOĞA
                         .col-12.col-md-3.mb-2.mb-md-0
-                            label(for="randevuTarih") Randevu Saati
-                            input#randevuTarih(type="datetime-local" name="randevuTarih").form-control.border-0
+                            label(for="randevuTarih")
+                                | Randevu Saati
+                                span(title="Zorunlu").text-danger *
+                            input#randevuTarih(type="datetime-local" name="randevuTarih").form-control
                         .col-12.col-md-3.mb-2.mb-md-0
-                            label(for="telno") Telefon Numarası
-                            input#telno(type="tel" name="telno" placeholder="5xxxxxxxxx" maxlength="10").form-control.border-0
+                            label(for="telno")
+                                | Telefon Numarası
+                                span(title="Zorunlu").text-danger *
+                            input#telno(type="tel" name="telno" placeholder="5xxxxxxxxx" maxlength="10").form-control
                         .col-12.col-md-3
-                            label(for="tcno") T.C. Kimlik Numarası
-                            input#tcno(type="text" name="tcno" placeholder="T.C. Kimlik Numarası" maxlength="11").form-control.border-0
+                            label(for="tcno")
+                                | T.C. Kimlik Numarası
+                                span(title="Zorunlu").text-danger *
+                            input#tcno(type="text" name="tcno" placeholder="T.C. Kimlik Numarası" maxlength="11").form-control
                     .row.mt-4
                         .col-md-9
                         .col-12.col-md-3

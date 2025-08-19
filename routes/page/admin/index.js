@@ -18,4 +18,8 @@ router.get('/ForgotPassword', route.forgotPassword);
 router.get('/Doktor', route.doktor);
 router.get('/Doktor/Ekle', route.doktorEkle);
 
+// İŞLEMLER
+router.get('/Islem', route.islem);
+router.get('/Islem/Ekle', route.islemEkle);
+
 module.exports = router;

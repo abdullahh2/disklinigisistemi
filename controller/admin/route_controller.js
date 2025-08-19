@@ -19,6 +19,15 @@ class AdminRoute {
         res.render('pages/admin/doktor/doktor_ekle', { title: 'Doktor Ekle' });
     }
 
+    //İŞLEMLER
+    islem(req, res) {
+        res.render('pages/admin/islemler/index', { title: 'İşlemler' });
+    }
+
+    islemEkle(req, res) {
+        res.render('pages/admin/islemler/islem_ekle', { title: 'İşlem Ekle' });
+    }
+
 
     //
 
