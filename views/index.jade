@@ -1,0 +1,260 @@
+extends ./layout
+
+block content
+    .row
+        .col-12.col-md-10.d-flex.mx-auto
+            .card.radius-10.w-100
+                .card-header
+                    .d-flex.align-items-center
+                    div
+                        h6.mb-0 Randevusu Yaklaşanlar
+
+                .card-body
+                    .table-responsive
+                        table.table.align-middle.mb-0#randevuYak
+                            thead.table-light
+                                tr.text-center
+                                    th #
+                                    th Doktor Adı
+                                    th Hasta Adı
+                                    th Tanı
+                                    th Randevu Tarihi
+                                    th Telefon 
+                                    th T.C.
+                                    th İşlemler
+                            tbody
+                                tr
+                                    th 1
+                                    th Onur YOLBAŞ
+                                    td Faik TURHAN
+                                    td Test hastalık adı
+                                    td 12.08.2025
+                                    td 0532 394 83 43
+                                    td 74372319232
+                                    td
+                                        button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
+                                            i.bx.bx-edit
+                                        button.btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1
+                                            i.bx.bx-trash
+                                tr
+                                    th 2
+                                    th Onur YOLBAŞ
+                                    td Abdullah YILDIZ
+                                    td Test hastalık adı
+                                    td 12.08.2025
+                                    td 0532 394 83 43
+                                    td 74372319232
+                                    td
+                                        button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
+                                            i.bx.bx-edit
+                                        button.btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1
+                                            i.bx.bx-trash
+                                tr
+                                    th 3
+                                    th Onur YOLBAŞ
+                                    td Serkan KARTAL
+                                    td Test hastalık adı
+                                    td 12.08.2025
+                                    td 0532 394 83 43
+                                    td 74372319232
+                                    td
+                                        button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
+                                            i.bx.bx-edit
+                                        button.btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1
+                                            i.bx.bx-trash
+
+    .row
+        .col-12.col-md-10.d-flex.mx-auto
+            .card.radius-10.w-100
+                .card-header
+                    .d-flex.align-items-center
+                    div
+                        h6.mb-0 Hasta Alım Tablosu
+
+                .card-body
+                    .table-responsive
+                        table.table.align-middle.mb-0#hastaAlimTab
+                            thead.table-light
+                                tr.text-center
+                                    th #
+                                    th Doktor Adı
+                                    th Hasta Adı
+                                    th Tanı
+                                    th Tarih
+                                    th Telefon 
+                                    th T.C.
+                                    th İşlemler
+                            tbody
+                                tr
+                                    th 1
+                                    th Onur YOLBAŞ
+                                    td Faik TURHAN
+                                    td Test hastalık adı
+                                    td 12.08.2025
+                                    td 0532 394 83 43
+                                    td 74372319232
+                                    td
+                                        button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
+                                            i.bx.bx-edit
+                                        button.btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1
+                                            i.bx.bx-trash
+                                tr
+                                    th 2
+                                    th Onur YOLBAŞ
+                                    td Abdullah YILDIZ
+                                    td Test hastalık adı
+                                    td 12.08.2025
+                                    td 0532 394 83 43
+                                    td 74372319232
+                                    td
+                                        button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
+                                            i.bx.bx-edit
+                                        button.btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1
+                                            i.bx.bx-trash
+                                tr
+                                    th 3
+                                    th Onur YOLBAŞ
+                                    td Serkan KARTAL
+                                    td Test hastalık adı
+                                    td 12.08.2025
+                                    td 0532 394 83 43
+                                    td 74372319232
+                                    td
+                                        button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
+                                            i.bx.bx-edit
+                                        button.btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1
+                                            i.bx.bx-trash
+
+    .row
+        .col-12.col-md-10.d-flex.mx-auto
+            .card.radius-10.w-100
+                .card-header
+                    .d-flex.align-items-center
+                        div
+                            h6.mb-0 Aylık İş Durumu
+
+                .card-body
+                    .d-flex.align-items-center.ms-auto.font-13.gap-2.mb-3
+                        span.border.px-1.rounded.cursor-pointer
+                            i.bx.bxs-circle.me-1(style='color: #14abef')
+                            | Onur
+                        span.border.px-1.rounded.cursor-pointer
+                            i.bx.bxs-circle.me-1(style='color: #ffc107')
+                            | Servet
+                        span.border.px-1.rounded.cursor-pointer
+                            i.bx.bxs-circle.me-1(style='color: #F42525FF')
+                            | Sedat
+
+                    .chart-container-1
+                        canvas#gelirGider
+
+                .row.row-cols-1.row-cols-md-3.row-cols-xl-3.g-0.row-group.text-center.border-top
+                    .col
+                        .p-3
+                            h5.mb-0 2.239.342₺
+                            small.mb-0
+                                | Servet
+
+                    .col
+                        .p-3
+                            h5.mb-0 134.234₺
+                            small.mb-0
+                                | Onur 
+
+                    .col
+                        .p-3
+                            h5.mb-0 325.321₺
+                            small.mb-0
+                                | Sedat 
+
+block csscode
+    link(href="assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet")
+block jscode
+    script(src="/assets/plugins/datatable/js/jquery.dataTables.min.js") 
+    script(src="/assets/plugins/datatable/js/dataTables.bootstrap5.min.js")
+    script.
+        $(document).ready(function () {
+            var table = $('#hastaAlimTab').DataTable( {
+                lengthChange: false,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/2.3.2/i18n/tr.json',
+                },
+            } );
+
+            var table = $('#randevuYak').DataTable( {
+                lengthChange: false,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/2.3.2/i18n/tr.json',
+                },
+            });
+
+            var ctx = document.getElementById("gelirGider").getContext('2d');
+
+            var gradientStroke1 = ctx.createLinearGradient(0, 0, 0, 300);
+                gradientStroke1.addColorStop(0, '#6078ea');  
+                gradientStroke1.addColorStop(1, '#17c5ea'); 
+
+            var gradientStroke2 = ctx.createLinearGradient(0, 0, 0, 300);
+                gradientStroke2.addColorStop(0, '#ff8359');
+                gradientStroke2.addColorStop(1, '#ffdf40');
+
+            var gradientStroke3 = ctx.createLinearGradient(0,0,0, 300);
+                gradientStroke3.addColorStop(0, "#F42525FF")
+                gradientStroke3.addColorStop(1, "#F77B7BFF")
+
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
+                    datasets: [{
+                        label: 'Onur',
+                        data: [65, 59, 80, 81,65, 59, 80, 81,59, 80, 81,65],
+                        borderColor: gradientStroke1,
+                        backgroundColor: gradientStroke1,
+                        hoverBackgroundColor: gradientStroke1,
+                        pointRadius: 0,
+                        fill: false,
+                        borderRadius: 20,
+                        borderWidth: 0
+                    }, {
+                        label: 'Servet',
+                        data: [28, 48, 40, 19,28, 48, 40, 19,40, 19,28, 48],
+                        borderColor: gradientStroke2,
+                        backgroundColor: gradientStroke2,
+                        hoverBackgroundColor: gradientStroke2,
+                        pointRadius: 0,
+                        fill: false,
+                        borderRadius: 20,
+                        borderWidth: 0
+                    },
+                    {
+                        label: 'Sedat',
+                        data: [79, 43, 59, 93, 34, 0, 32, 11, 30, 39, 23, 12],
+                        borderColor: gradientStroke3,
+                        backgroundColor: gradientStroke3,
+                        hoverBackgroundColor: gradientStroke3,
+                        pointRadius: 0,
+                        fill: false,
+                        borderRadius: 20,
+                        borderWidth: 0
+                    }]
+                },
+
+                options: {
+                    maintainAspectRatio: false,
+                    barPercentage: 0.5,
+                    categoryPercentage: 0.8,
+                        plugins: {
+                            legend: {
+                                display: false,
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                }
+            );
+        })

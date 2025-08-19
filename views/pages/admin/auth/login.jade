@@ -1,0 +1,81 @@
+doctype html
+head
+    // Required meta tags
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+    // favicon
+    link(rel='icon' href='/assets/images/favicon-32x32.png' type='image/png')
+    // plugins
+    link(href='/assets/plugins/simplebar/css/simplebar.css' rel='stylesheet')
+    link(href='/assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css' rel='stylesheet')
+    link(href='/assets/plugins/metismenu/css/metisMenu.min.css' rel='stylesheet')
+    // loader
+    link(href='/assets/css/pace.min.css' rel='stylesheet')
+    script(src='/assets/js/pace.min.js')
+    // Bootstrap CSS
+    link(href='/assets/css/bootstrap.min.css' rel='stylesheet')
+    link(href='/assets/css/bootstrap-extended.css' rel='stylesheet')
+    link(href='https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap' rel='stylesheet')
+    link(href='/assets/css/app.css' rel='stylesheet')
+    link(href='/assets/css/icons.css' rel='stylesheet')
+    title Servet Toprak | Diş Kliniği
+// wrapper
+.wrapper
+    .section-authentication-signin.d-flex.align-items-center.justify-content-center.my-5.my-lg-0
+        .container
+            .row.row-cols-1.row-cols-lg-2.row-cols-xl-3
+                .col.mx-auto
+                    .card.mb-0
+                        .card-body
+                            .p-4
+                                .mb-3.text-center
+                                    img(src='/assets/images/logo-icon.png' width='60' alt='')
+                                .text-center.mb-4
+                                    h5 Servet Toprak
+                                    p.mb-0 Lütfen hesabınıza giriş yapın
+                                .form-body
+                                    form.row.g-3
+                                        .col-12
+                                            label.form-label(for='inputEmailAddress') E-Posta Adresi
+                                            input#inputEmailAddress.form-control(type='email' placeholder='servettoprak@gmail.com')
+                                        .col-12
+                                            label.form-label(for='inputChoosePassword') Parola
+                                            #show_hide_password.input-group
+                                                input#inputChoosePassword.form-control.border-end-0(type='password' placeholder='Parolanızı Girin')
+                                                a.input-group-text.bg-transparent(href='javascript:;')
+                                                    i.bx.bx-hide
+                                        .col-md-6
+                                            .form-check.form-switch
+                                                input#flexSwitchCheckChecked.form-check-input(type='checkbox' checked)
+                                                label.form-check-label(for='flexSwitchCheckChecked') Beni Hatırla
+                                        .col-md-6.text-end
+                                            a(href='/Admin/ForgotPassword') Şifremi Unuttum
+                                        .col-12
+                                            .d-grid
+                                                button.btn.btn-primary(type='submit') Giriş Yap
+// end wrapper
+// Bootstrap JS
+script(src='/assets/js/bootstrap.bundle.min.js')
+// plugins
+script(src='/assets/js/jquery.min.js')
+script(src='/assets/plugins/simplebar/js/simplebar.min.js')
+script(src='/assets/plugins/metismenu/js/metisMenu.min.js')
+script(src='/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js')
+// Password show & hide js
+script.
+    $(document).ready(function () {
+    $("#show_hide_password a").on('click', function (event) {
+    event.preventDefault();
+    if ($('#show_hide_password input').attr("type") == "text") {
+    $('#show_hide_password input').attr('type', 'password');
+    $('#show_hide_password i').addClass("bx-hide");
+    $('#show_hide_password i').removeClass("bx-show");
+    } else if ($('#show_hide_password input').attr("type") == "password") {
+    $('#show_hide_password input').attr('type', 'text');
+    $('#show_hide_password i').removeClass("bx-hide");
+    $('#show_hide_password i').addClass("bx-show");
+    }
+    });
+    });
+// app JS
+script(src='assets/js/app.js')

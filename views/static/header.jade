@@ -1,0 +1,35 @@
+header
+    .topbar.d-flex.align-items-center
+        nav.navbar.navbar-expand.gap-3
+            .topbar-logo-header.d-none.d-lg-flex
+                div
+                    img.logo-icon(src='/assets/images/logo-icon.png' alt='logo icon')
+                div
+                    h4.logo-text Servet Toprak
+            .mobile-toggle-menu.d-block.d-lg-none(data-bs-toggle='offcanvas' data-bs-target='#offcanvasNavbar')
+                i.bx.bx-menu
+
+            .top-menu.ms-auto
+                ul.navbar-nav.align-items-center.gap-1
+
+            .user-box.dropdown.px-3
+                a.d-flex.align-items-center.nav-link.dropdown-toggle.gap-3.dropdown-toggle-nocaret(href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false')
+                    img.user-img(src='/assets/images/avatars/avatar-1.png' alt='user avatar')
+                    .user-info
+                        p.user-name.mb-0 Onur YOLBAŞ
+                        p.designattion.mb-0 Orolog
+                ul.dropdown-menu.dropdown-menu-end
+                    li
+                        a.dropdown-item.d-flex.align-items-center(href='javascript:;')
+                            i.bx.bx-user.fs-5
+                            span Profil
+                    li
+                        a.dropdown-item.d-flex.align-items-center(href='javascript:;')
+                            i.bx.bx-cog.fs-5
+                            span Ayarlar
+                    li
+                        .dropdown-divider.mb-0
+                    li
+                        a.dropdown-item.d-flex.align-items-center(href='javascript:;')
+                            i.bx.bx-log-out-circle
+                            span Çıkış Yap

@@ -1,0 +1,63 @@
+.primary-menu
+    nav.navbar.navbar-expand-lg.align-items-center
+        #offcanvasNavbar.offcanvas.offcanvas-start(tabindex='-1' aria-labelledby='offcanvasNavbarLabel')
+            .offcanvas-header.border-bottom
+                .d-flex.align-items-center
+                    div
+                        img.logo-icon(src='/assets/images/logo-icon.png' alt='logo icon')
+                    div
+                        h4.logo-text Rocker
+                button.btn-close(type='button' data-bs-dismiss='offcanvas' aria-label='Close')
+            .offcanvas-body
+                ul.navbar-nav.align-items-center.flex-grow-1
+                    li.nav-item
+                        a.nav-link(href='/Admin')
+                            .parent-icon
+                                i.bx.bx-home-alt
+                            .menu-title.d-flex.align-items-center Ana Sayfa
+
+
+
+                    li.nav-item.dropdown
+                        a.nav-link.dropdown-toggle.dropdown-toggle-nocaret(href='javascript:;' data-bs-toggle='dropdown')
+                            .parent-icon
+                                i.bx.bx-health
+                            .menu-title.d-flex.align-items-center Hasta
+                            .ms-auto.dropy-icon
+                                i.bx.bx-chevron-down
+                        ul.dropdown-menu
+                            li
+                                a.dropdown-item(href='/Admin/Hastalar')
+                                    i.bx.bx-poll
+                                    | Hasta Tablosu
+                            li
+                                a.dropdown-item(href='/Admin/Hastalar/Ekle')
+                                    i.bx.bx-user-plus
+                                    | Hasta Ekle
+
+                    li.nav-item.dropdown
+                        a.nav-link.dropdown-toggle.dropdown-toggle-nocaret(href='javascript:;' data-bs-toggle='dropdown')
+                            .parent-icon
+                                i.bx.bx-book-alt
+                            .menu-title.d-flex.align-items-center Yönetim
+                            .ms-auto.dropy-icon
+                                i.bx.bx-chevron-down
+                        ul.dropdown-menu
+                            li
+                                a.dropdown-item(href='form-elements.html')
+                                    i.bx.bx-poll
+                                    | Veri Ekle
+                            li.nav-item.dropend
+                                a.dropdown-item.dropdown-toggle.dropdown-toggle-nocaret(href='javascript:;')
+                                    i.bx.bx-user
+                                    | Doktor
+                                ul.dropdown-menu.submenu
+                                    li
+                                        a.dropdown-item(href="/Admin/Doktor")
+                                            i.bx.bx-user
+                                            | Doktor Listesi
+                                    li
+                                        a.dropdown-item(href="/Admin/Doktor/Ekle")
+                                            i.bx.bx-user-plus
+                                            | Doktor Ekle
+
