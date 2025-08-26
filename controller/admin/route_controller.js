@@ -11,7 +11,7 @@ class AdminRoute {
     async hastalar(req, res) {
         try {
             var name = req.payload.name;
-            const hastalar = await m_hasta.find();
+            const hastalar = await m_hasta.find().populate('doktor').populate('islem').sort({ randevu_tarih: -1 });
             return res.render('pages/admin/hasta/index', { title: 'Hastalar', name: name, hastalar: hastalar });
         } catch (error) {
             c_log("ADMIN HASTALAR", error);

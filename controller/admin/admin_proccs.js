@@ -1,6 +1,7 @@
 const c_log = require('../../helpers/c_log');
 const m_admin = require('../../models/m_admin');
 const m_islem = require('../../models/m_islem');
+const m_hasta = require('../../models/m_hasta');
 const jwt = require('jsonwebtoken');
 const { WRXcrypt, WRXdecrypt } = require('../../helpers/wrx_crypt');
 
@@ -79,6 +80,34 @@ class AdminProccs {
             return res.redirect('/Admin/Islem');
         } catch (error) {
             c_log("ISLEM SIL ADMIN", error);
+        }
+    }
+
+    async hastaSil(req, res) {
+        try {
+            await m_hasta.findByIdAndDelete(req.body.hastaid);
+            return res.redirect('/Admin/Hastalar');
+        } catch (error) {
+            c_log("HASTA SIL ADMIN", error);
+        }
+    }
+
+    async hastaEkle(req, res) {
+        try {
+            const hasta = new m_hasta({
+                adsoyad: req.body.adsoyad,
+                islem: req.body.islem,
+                doktor: req.body.doktor,
+                randevu_tarih: req.body.randevutarih,
+                tel: req.body.tel,
+                aciklama: req.body.aciklama,
+                ucret: req.body.ucret,
+                odenen_ucret: req.body.odenenucret
+            });
+            await hasta.save();
+            return res.redirect('/Admin/Hastalar');
+        } catch (error) {
+            c_log("HASTA EKLE ADMIN", error);
         }
     }
 
