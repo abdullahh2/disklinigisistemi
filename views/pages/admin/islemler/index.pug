@@ -32,7 +32,8 @@ block content
                                         td.text-center
                                             button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
                                                 i.bx.bx-edit
-                                            button.btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1
+
+                                            button(data-islem-id= islem._id).btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1.islem-sil
                                                 i.bx.bx-trash
 
 
@@ -59,4 +60,21 @@ block jscode
                     url: "https://cdn.datatables.net/plug-ins/2.3.2/i18n/tr.json",
                 },
             });
+
+            $('.islem-sil').on('click', function(){
+                var islemId = $(this).attr('data-islem-id');
+                var sor = confirm('Bu işlemi silmek istiyor musunuz?');
+                if (sor) {
+                    $.ajax({
+                        url: '/Admin/Islem/Sil',
+                        type: 'POST',
+                        data: {
+                            islemid: islemId
+                        },
+                        success: function(response){
+                            location.reload();
+                        }
+                    })
+                }
+            })
         })

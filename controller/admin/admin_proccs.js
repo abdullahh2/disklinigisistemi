@@ -49,6 +49,17 @@ class AdminProccs {
         }
     }
 
+    async doktorSil(req, res) {
+        try {
+            if(req.body.doktorid == req.payload.userid)
+                return res.redirect('/Admin/Doktor');
+            await m_admin.findByIdAndDelete(req.body.doktorid);
+            return res.redirect('/Admin/Doktor');
+        } catch (error) {
+            c_log("DOKTOR SIL ADMIN", error);
+        }
+    }
+
     async islemEkle(req, res) {
         try {
             const islem = new m_islem({
@@ -59,6 +70,15 @@ class AdminProccs {
             return res.redirect('/Admin/Islem');
         } catch (error) {
             c_log("ISLEM EKLE ADMIN", error);
+        }
+    }
+
+    async islemSil(req, res) {
+        try {
+            await m_islem.findByIdAndDelete(req.body.islemid);
+            return res.redirect('/Admin/Islem');
+        } catch (error) {
+            c_log("ISLEM SIL ADMIN", error);
         }
     }
 

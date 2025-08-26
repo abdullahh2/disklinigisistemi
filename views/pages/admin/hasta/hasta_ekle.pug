@@ -56,7 +56,7 @@ block content
                             label(for="telno")
                                 | Telefon Numarası
                                 span(title="Zorunlu").text-danger *
-                            input#telno(type="tel" name="telno" placeholder="5xxxxxxxxx" maxlength="10").form-control
+                            input#telno(type="tel" name="telno" placeholder="05xxxxxxxxx" maxlength="11").form-control
                         .col-12.col-md-3
                             label(for="tcno")
                                 | T.C. Kimlik Numarası
@@ -72,8 +72,6 @@ block content
 block jscode
     script.
         $(document).ready(function () {
-
-
             $('#islem').on('change', function () {
                 var ucret = $(this).find(':selected').data('ucret');
                 $('#ucret').val(ucret);
