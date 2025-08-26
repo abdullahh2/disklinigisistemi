@@ -1,5 +1,6 @@
 var express = require('express');
 var route = require('../../../controller/admin/route_controller');
+var proccs = require('../../../controller/admin/admin_proccs');
 var router = express.Router();
 
 
@@ -10,16 +11,17 @@ router.get('/', route.index);
 router.get('/Hastalar', route.hastalar);
 router.get('/Hastalar/Ekle', route.hastaEkle);
 
-// AUTH
-router.get('/Login', route.login);
-router.get('/ForgotPassword', route.forgotPassword);
-
 // DOKTOR
 router.get('/Doktor', route.doktor);
 router.get('/Doktor/Ekle', route.doktorEkle);
+router.post('/Doktor/Ekle', proccs.doktorEkle);
 
 // İŞLEMLER
 router.get('/Islem', route.islem);
 router.get('/Islem/Ekle', route.islemEkle);
+
+// AUTH
+router.post('/Logout', route.postLogout);
+
 
 module.exports = router;

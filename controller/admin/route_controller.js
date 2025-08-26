@@ -1,31 +1,52 @@
+const c_log = require('../../helpers/c_log');
+const m_admin = require('../../models/m_admin');
 class AdminRoute {
     index(req, res) {
-        res.render('pages/admin/index', { title: 'Admin' });
+        var name = req.payload.name;
+        res.render('pages/admin/index', { title: 'Admin', name: name });
     }
     //HASTALAR
     hastalar(req, res) {
-        res.render('pages/admin/hasta/index', { title: 'Hastalar' });
+        var name = req.payload.name;
+        res.render('pages/admin/hasta/index', { title: 'Hastalar', name: name });
     }
 
     hastaEkle(req, res) {
-      res.render('pages/admin/hasta/hasta_ekle', { title: 'Hasta Ekle' });
+        var name = req.payload.name;
+        res.render('pages/admin/hasta/hasta_ekle', { title: 'Hasta Ekle', name: name });
     }
     //DOKTOR
-    doktor(req, res) {
-        res.render('pages/admin/doktor/index', {title: "Doktor Listesi"});
+    async doktor(req, res) {
+
+        try {
+        var name = req.payload.name;
+
+            const doktorlar = await m_admin.find();
+            res.render('pages/admin/doktor/index', { title: 'Doktorlar', doktorlar: doktorlar, name: name });
+        } catch (error) {
+            c_log("ADMIN DOKTOR", error);
+            return res.redirect('/Admin/Login');
+        }
+        
     }
 
     doktorEkle(req, res) {
-        res.render('pages/admin/doktor/doktor_ekle', { title: 'Doktor Ekle' });
+        var name = req.payload.name;
+
+        res.render('pages/admin/doktor/doktor_ekle', { title: 'Doktor Ekle', name: name });
     }
 
     //İŞLEMLER
     islem(req, res) {
-        res.render('pages/admin/islemler/index', { title: 'İşlemler' });
+        var name = req.payload.name;
+
+        res.render('pages/admin/islemler/index', { title: 'İşlemler', name: name });
     }
 
     islemEkle(req, res) {
-        res.render('pages/admin/islemler/islem_ekle', { title: 'İşlem Ekle' });
+        var name = req.payload.name;
+
+        res.render('pages/admin/islemler/islem_ekle', { title: 'İşlem Ekle', name: name });
     }
 
 
@@ -33,11 +54,21 @@ class AdminRoute {
 
     //AUTH
     login(req, res) {
-        res.render('pages/admin/auth/login');
+        res.render('pages/admin/auth/login', { err: null });
     }
 
     forgotPassword(req, res) {
       res.render('pages/admin/auth/forgot_pass');
+    }
+
+    async postLogout(req, res) {
+        try {
+            res.clearCookie('token');
+            return res.redirect('/Admin/Login');
+        } catch (error) {
+            c_log("ADMIN LOGOUT", error);
+            return res.redirect('/Admin/Login');
+        }
     }
 
 

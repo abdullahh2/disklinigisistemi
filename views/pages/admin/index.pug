@@ -168,20 +168,20 @@ block content
                                 | Hakan 
 
 block csscode
-    link(href="assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet")
+    link(href='assets/plugins/datatable/css/dataTables.bootstrap5.min.css' rel='stylesheet')
 block jscode
-    script(src="/assets/plugins/datatable/js/jquery.dataTables.min.js") 
-    script(src="/assets/plugins/datatable/js/dataTables.bootstrap5.min.js")
+    script(src='/assets/plugins/datatable/js/jquery.dataTables.min.js') 
+    script(src='/assets/plugins/datatable/js/dataTables.bootstrap5.min.js')
     script.
         $(document).ready(function () {
-            var table = $('#hastaAlimTab').DataTable( {
+            var table = $('#hastaAlimTab').DataTable({
                 lengthChange: false,
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/tr.json',
                 },
-            } );
+            });
 
-            var table = $('#randevuYak').DataTable( {
+            var table = $('#randevuYak').DataTable({
                 lengthChange: false,
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/tr.json',

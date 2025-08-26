@@ -1,0 +1,73 @@
+extends ../../../layout
+
+
+block content
+    .row
+        .col-12.col-md-10.d-flex.mx-auto
+            .card.radius-10.w-100
+                .card-header
+                    .d-flex.align-items-center
+                        div
+                            h6.mb-0 Doktorlar
+                        .ms-auto
+                            a.btn.btn-sm.btn-outline-primary(href="/Admin/Doktor/Ekle")
+                                i.bx.bx-plus-circle.font-22
+                                | Doktor Ekle
+
+                .card-body
+                    .table-responsive
+                        table.table.align-middle.mb-0.table-striped.table-bordered.dataTable.nowrap-disabled#hastalar
+                            thead.table-light
+                                tr.text-center
+                                    th #
+                                    th Doktor Adı                                    
+                                    th Telefon
+                                    th İşlemler
+                            tbody
+
+                                - for(var i = 0; i < doktorlar.length; i++) {
+                                    tr
+                                        th= (i+1)
+                                        th= doktorlar[i].name
+                                        td= doktorlar[i].phone
+                                        td.text-center
+                                            button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
+                                                i.bx.bx-edit
+                                            button.btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1
+                                                i.bx.bx-trash
+                                - }
+
+
+
+block csscode
+    link(href="/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet")
+    style.
+        #hastalar td {
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+block jscode
+    script(src="/assets/plugins/datatable/js/jquery.dataTables.min.js") 
+    script(src="/assets/plugins/datatable/js/dataTables.bootstrap5.min.js")
+    script.
+        $(document).ready(function (){
+            $('#hastalar').DataTable( {
+                lengthChange: false,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/2.3.2/i18n/tr.json",
+                },
+                "columnDefs": [
+                    {
+                        "targets": 4,
+                        "render": function ( data, type, row ) {
+                            var fullText = data;
+                            if (type === 'display' && fullText.length > 100) {
+                                return '<span title="' + fullText + '">' + fullText.substr( 0, 100 ) + '…</span>';
+                            }
+                            return fullText;
+                        }
+                    }
+                ]
+            });
+        })
