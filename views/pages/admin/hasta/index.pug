@@ -30,9 +30,7 @@ block content
                                     th Kalan Borç
                                     th İşlemler
                             tbody
-                                - function randomIntFromInterval(min, max) {
-                                -   return Math.floor(Math.random() * (max - min + 1) + min);
-                                - }
+
 
                                 - const maskPhoneNumber = (phoneNumber) => {
                                 -    const cleaned = ('' + phoneNumber).replace(/\D/g, '');
@@ -47,42 +45,30 @@ block content
                                 -    return `0${areaCode} ${firstPart} ${secondPart} ${thirdPart}`;
                                 - };
 
-                                - const generateRandomDate = () => {
-                                -    const startDate = new Date('2023-01-01');
-                                -    const endDate = new Date('2025-12-31');
-                                -    const startTimestamp = startDate.getTime();
-                                -    const endTimestamp = endDate.getTime();
-                                -    const diffTimestamp = endTimestamp - startTimestamp;
-                                -    const randomTimestamp = startTimestamp + Math.floor(Math.random() * diffTimestamp);
-                                -    const randomDate = new Date(randomTimestamp);
-                                -    const day = String(randomDate.getDate()).padStart(2, '0');
-                                -    const month = String(randomDate.getMonth() + 1).padStart(2, '0'); // Ay 0'dan başladığı için +1 ekliyoruz
-                                -    const year = randomDate.getFullYear();
-                                -    return `${day}.${month}.${year}`;
-                                - };
-                                - for(var i=0; i<150; i++) {
-                                -   console.log(i);
+                                each hasta, i in hastalar
                                     tr
                                         th= (i+1)
-                                        th Onur YOLBAŞ
-                                        td Faik TURHAN
-                                        td Kanal Tedavi
-                                        td(style="width: 200px;") Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                        th= hasta.doktor
+                                        td= hasta.adsoyad
+                                        td= hasta.islem
+                                        td(style="width: 200px;")= hasta.aciklama
                                         td= generateRandomDate()
                                         td
-                                            a(href="tel:#{maskPhoneNumber(randomIntFromInterval(5000000000, 5999999999))}") #{maskPhoneNumber(randomIntFromInterval(5000000000, 5999999999))}
+                                            a(href="tel:#{maskPhoneNumber(hasta.tel)}") #{maskPhoneNumber(hasta.tel)}
                                         td= randomIntFromInterval(10000000000, 99999999999)
-                                        if(i%2 == 0)
+                                        if(hasta.odenen_ucret >= hasta.ucret)
                                             td.bg-success.text-white.text-center Ödendi
                                         else
-                                            td.bg-danger.text-white.text-center #{randomIntFromInterval(1000, 20000)} ₺
+                                            td.bg-danger.text-white.text-center #{hasta.ucret - hasta.odenen_ucret} ₺
                                         td
                                             button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
                                                 i.bx.bx-edit
                                             button.btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1
                                                 i.bx.bx-trash
 
-                                - }
+
+
+
 
 block csscode
     link(href="/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet")

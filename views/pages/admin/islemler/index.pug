@@ -24,27 +24,20 @@ block content
                                     th İşlem Ücreti
                                     th İşlemler
                             tbody
+                                each islem, i in islemler
+                                    tr
+                                        th= (i+1)
+                                        th= islem.ad
+                                        td= islem.ucret
+                                        td.text-center
+                                            button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
+                                                i.bx.bx-edit
+                                            button.btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1
+                                                i.bx.bx-trash
 
 
-                                tr
-                                    th 1
-                                    th Diş Çekimi
-                                    td 3.000₺
-                                    td.text-center
-                                        button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
-                                            i.bx.bx-edit
-                                        button.btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1
-                                            i.bx.bx-trash
 
-                                tr
-                                    th 2
-                                    th Kanal Tedavi
-                                    td 5.000₺
-                                    td.text-center
-                                        button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
-                                            i.bx.bx-edit
-                                        button.btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1
-                                            i.bx.bx-trash
+
 
 
 block csscode

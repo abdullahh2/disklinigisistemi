@@ -8,23 +8,25 @@ block content
             hr
             .card
                 .card-body
-                    .row.mb-2
-                        .col-12.col-md-4.mb-2.mb-md-0
-                            label(for="islemAdi") İşlem Adı 
-                            input#islemAdi(type="text" name="islemAdi" placeholder="İşlem adı giriniz").form-control
-                        .col-12.col-md-4.mb-2.mb-md-0
-                            label(for="islemUcret") İşlem Ücreti
-                            input#islemUcret(type="number" name="islemUcret" placeholder="İşlem ücreti giriniz").form-control
+                    form(method="POST")
+                        .row.mb-2
+
+                            .col-12.col-md-4.mb-2.mb-md-0
+                                label(for="ad") İşlem Adı 
+                                input#ad(type="text" name="ad" placeholder="İşlem adı giriniz").form-control
+                            .col-12.col-md-4.mb-2.mb-md-0
+                                label(for="ucret") İşlem Ücreti
+                                input#ucret(type="number" name="ucret" placeholder="İşlem ücreti giriniz").form-control
 
 
 
 
-                    .row.mt-4
-                        .col-md-9
-                        .col-12.col-md-3
-                            button(type="submit").btn.btn-sm.btn-outline-primary.col-12
-                                i.bx.bx-user-plus
-                                | İşlem Ekle 
+                        .row.mt-4
+                            .col-md-9
+                            .col-12.col-md-3
+                                button(type="submit").btn.btn-sm.btn-outline-primary.col-12
+                                    i.bx.bx-user-plus
+                                    | İşlem Ekle 
 
 block jscode
     script.

@@ -1,5 +1,6 @@
 const c_log = require('../../helpers/c_log');
 const m_admin = require('../../models/m_admin');
+const m_islem = require('../../models/m_islem');
 const jwt = require('jsonwebtoken');
 const { WRXcrypt, WRXdecrypt } = require('../../helpers/wrx_crypt');
 
@@ -45,6 +46,19 @@ class AdminProccs {
             return res.redirect('/Admin/Doktor');
         } catch (error) {
             c_log("FIRST SETTINGS", error);
+        }
+    }
+
+    async islemEkle(req, res) {
+        try {
+            const islem = new m_islem({
+                ad: req.body.ad,
+                ucret: req.body.ucret
+            });
+            await islem.save();
+            return res.redirect('/Admin/Islem');
+        } catch (error) {
+            c_log("ISLEM EKLE ADMIN", error);
         }
     }
 

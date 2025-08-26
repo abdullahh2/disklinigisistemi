@@ -21,7 +21,7 @@ const hasta = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Islem'
     },
-    not: String,
+    aciklama: String,
     ucret: {
         type: Number,
         required: true

@@ -19,6 +19,7 @@ router.post('/Doktor/Ekle', proccs.doktorEkle);
 // İŞLEMLER
 router.get('/Islem', route.islem);
 router.get('/Islem/Ekle', route.islemEkle);
+router.post('/Islem/Ekle', proccs.islemEkle);
 
 // AUTH
 router.post('/Logout', route.postLogout);

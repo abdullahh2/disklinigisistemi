@@ -1,26 +1,40 @@
 const c_log = require('../../helpers/c_log');
 const m_admin = require('../../models/m_admin');
+const m_hasta = require('../../models/m_hasta');
+const m_islem = require('../../models/m_islem');
 class AdminRoute {
     index(req, res) {
         var name = req.payload.name;
         res.render('pages/admin/index', { title: 'Admin', name: name });
     }
     //HASTALAR
-    hastalar(req, res) {
-        var name = req.payload.name;
-        res.render('pages/admin/hasta/index', { title: 'Hastalar', name: name });
+    async hastalar(req, res) {
+        try {
+            var name = req.payload.name;
+            const hastalar = await m_hasta.find();
+            return res.render('pages/admin/hasta/index', { title: 'Hastalar', name: name, hastalar: hastalar });
+        } catch (error) {
+            c_log("ADMIN HASTALAR", error);
+            return res.redirect('/Admin');
+        }
     }
 
-    hastaEkle(req, res) {
-        var name = req.payload.name;
-        res.render('pages/admin/hasta/hasta_ekle', { title: 'Hasta Ekle', name: name });
+    async hastaEkle(req, res) {
+        try {
+            var name = req.payload.name;
+            const islemler = await m_islem.find();
+            const doktorlar = await m_admin.find();
+            res.render('pages/admin/hasta/hasta_ekle', { title: 'Hasta Ekle', name: name, doktorlar: doktorlar, islemler: islemler });
+        } catch (error) {
+            c_log("ADMIN HASTA EKLE", error);
+            return res.redirect('/Admin');
+        }
     }
     //DOKTOR
     async doktor(req, res) {
 
         try {
-        var name = req.payload.name;
-
+            var name = req.payload.name;
             const doktorlar = await m_admin.find();
             res.render('pages/admin/doktor/index', { title: 'Doktorlar', doktorlar: doktorlar, name: name });
         } catch (error) {
@@ -32,20 +46,23 @@ class AdminRoute {
 
     doktorEkle(req, res) {
         var name = req.payload.name;
-
         res.render('pages/admin/doktor/doktor_ekle', { title: 'Doktor Ekle', name: name });
     }
 
     //İŞLEMLER
-    islem(req, res) {
-        var name = req.payload.name;
-
-        res.render('pages/admin/islemler/index', { title: 'İşlemler', name: name });
+    async islem(req, res) {
+        try {
+            var name = req.payload.name;
+            const islemler = await m_islem.find();
+            res.render('pages/admin/islemler/index', { title: 'İşlemler', name: name, islemler: islemler });
+        } catch (error) {
+            c_log("ADMIN ISLEMLER", error);
+            return res.redirect('/Admin');
+        }
     }
 
     islemEkle(req, res) {
         var name = req.payload.name;
-
         res.render('pages/admin/islemler/islem_ekle', { title: 'İşlem Ekle', name: name });
     }
 

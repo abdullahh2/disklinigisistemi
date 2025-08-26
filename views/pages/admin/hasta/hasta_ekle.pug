@@ -10,18 +10,18 @@ block content
                 .card-body
                     .row.mb-2
                         .col-12.col-md-4.mb-2.mb-md-0
-                            label(for="hastaAdi")
+                            label(for="adsoyad")
                                 | Hasta Adı
                                 span(title="Zorunlu").text-danger *
-                            input#hastaAdi(type="text" name="hastaAdi" placeholder="Hasta adı giriniz").form-control
+                            input#adsoyad(type="text" name="adsoyad" placeholder="Hasta adı soyadı giriniz").form-control
                         .col-12.col-md-4
                             label(for="islem")
                                 | İşlem Seçiniz
                                 span(title="Zorunlu").text-danger *
                             select#islem(name="islem").form-control
                                 option(selected disabled) İşlem Seçiniz 
-                                option(value="discekimi") Diş Çekimi
-                                option(value="kanaltedavi") Kanal Tedavi
+                                each islem in islemler
+                                    option(value=islem._id data-ucret=islem.ucret) #{islem.ad}
 
                         .col-6.col-md-2
                             label(for="ucret")
@@ -41,13 +41,12 @@ block content
                             textarea#aciklama(name="aciklama").form-control
                     .row.mb-2
                         .col-12.col-md-3.mb-2.mb-md-0
-                            label(for="doktorAdi")
+                            label(for="doktor")
                                 | Doktor Seçiniz
                                 span(title="Zorunlu").text-danger *
-                            select#doktorAdi(name="doktorAdi").form-control
-                                option(value="onur") Onur YOLBAŞ
-                                option(value="servet") Servet TOPRAK
-                                option(value="sedat") Sedat ARABOĞA
+                            select#doktor(name="doktor").form-control
+                                each doktor in doktorlar
+                                    option(value=doktor._id) #{doktor.name}
                         .col-12.col-md-3.mb-2.mb-md-0
                             label(for="randevuTarih")
                                 | Randevu Saati
@@ -68,4 +67,29 @@ block content
                         .col-12.col-md-3
                             button(type="submit").btn.btn-sm.btn-outline-primary.col-12
                                 i.bx.bx-user-plus
-                                | Hastayı Kaydet 
+                                | Hastayı Kaydet
+
+block jscode
+    script.
+        $(document).ready(function () {
+
+
+            $('#islem').on('change', function () {
+                var ucret = $(this).find(':selected').data('ucret');
+                $('#ucret').val(ucret);
+            });
+
+            const nowUtc = new Date();
+            const turkeyTimezoneOffset = 3 * 60 * 60 * 1000;
+            const nowTurkey = new Date(nowUtc.getTime() + turkeyTimezoneOffset);
+            function formatLocalTime(date) {
+                const year = date.getUTCFullYear();
+                const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+                const day = date.getUTCDate().toString().padStart(2, '0');
+                const hours = date.getUTCHours().toString().padStart(2, '0');
+                const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+
+                return `${year}-${month}-${day}T${hours}:${minutes}`;
+            }
+            $('#randevuTarih').val(formatLocalTime(nowTurkey));
+        });
