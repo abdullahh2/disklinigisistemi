@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const hasta = new mongoose.Schema({
     doktor: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Doktorlar'
+        ref: 'admin'
     },
     adsoyad: {
         type: String,

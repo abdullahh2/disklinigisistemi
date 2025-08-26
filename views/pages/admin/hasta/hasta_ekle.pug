@@ -8,66 +8,63 @@ block content
             hr
             .card
                 .card-body
-                    .row.mb-2
-                        .col-12.col-md-4.mb-2.mb-md-0
-                            label(for="adsoyad")
-                                | Hasta Adı
-                                span(title="Zorunlu").text-danger *
-                            input#adsoyad(type="text" name="adsoyad" placeholder="Hasta adı soyadı giriniz").form-control
-                        .col-12.col-md-4
-                            label(for="islem")
-                                | İşlem Seçiniz
-                                span(title="Zorunlu").text-danger *
-                            select#islem(name="islem").form-control
-                                option(selected disabled) İşlem Seçiniz 
-                                each islem in islemler
-                                    option(value=islem._id data-ucret=islem.ucret) #{islem.ad}
+                    form(method="POST") 
+                        .row.mb-2
+                            .col-12.col-md-4.mb-2.mb-md-0
+                                label(for="adsoyad")
+                                    | Hasta Adı
+                                    span(title="Zorunlu").text-danger *
+                                input#adsoyad(type="text" name="adsoyad" placeholder="Hasta adı soyadı giriniz").form-control
+                            .col-12.col-md-4
+                                label(for="islem")
+                                    | İşlem Seçiniz
+                                    span(title="Zorunlu").text-danger *
+                                select#islem(name="islem").form-control
+                                    option(selected disabled) İşlem Seçiniz 
+                                    each islem in islemler
+                                        option(value=islem._id data-ucret=islem.ucret) #{islem.ad}
 
-                        .col-6.col-md-2
-                            label(for="ucret")
-                                | Ücret
-                                span(title="Zorunlu").text-danger *
-                            input#ucret(type="number" name="ucret" placeholder="0").form-control
-                        .col-6.col-md-2
-                            label(for="odenen")
-                                | Ödenen Miktar
-                                span(title="Zorunlu").text-danger *
-                            input#odenen(type="number" name="odenen" placeholder="0").form-control
-                    .row.mb-2
-                        .col-12
-                            label(for="aciklama")
-                                | İşleme Dair Not
-                                span(title="Zorunlu").text-danger *
-                            textarea#aciklama(name="aciklama").form-control
-                    .row.mb-2
-                        .col-12.col-md-3.mb-2.mb-md-0
-                            label(for="doktor")
-                                | Doktor Seçiniz
-                                span(title="Zorunlu").text-danger *
-                            select#doktor(name="doktor").form-control
-                                each doktor in doktorlar
-                                    option(value=doktor._id) #{doktor.name}
-                        .col-12.col-md-3.mb-2.mb-md-0
-                            label(for="randevuTarih")
-                                | Randevu Saati
-                                span(title="Zorunlu").text-danger *
-                            input#randevuTarih(type="datetime-local" name="randevuTarih").form-control
-                        .col-12.col-md-3.mb-2.mb-md-0
-                            label(for="telno")
-                                | Telefon Numarası
-                                span(title="Zorunlu").text-danger *
-                            input#telno(type="tel" name="telno" placeholder="05xxxxxxxxx" maxlength="11").form-control
-                        .col-12.col-md-3
-                            label(for="tcno")
-                                | T.C. Kimlik Numarası
-                                span(title="Zorunlu").text-danger *
-                            input#tcno(type="text" name="tcno" placeholder="T.C. Kimlik Numarası" maxlength="11").form-control
-                    .row.mt-4
-                        .col-md-9
-                        .col-12.col-md-3
-                            button(type="submit").btn.btn-sm.btn-outline-primary.col-12
-                                i.bx.bx-user-plus
-                                | Hastayı Kaydet
+                            .col-6.col-md-2
+                                label(for="ucret")
+                                    | Ücret
+                                    span(title="Zorunlu").text-danger *
+                                input#ucret(type="number" name="ucret" placeholder="0").form-control
+                            .col-6.col-md-2
+                                label(for="odenenucret")
+                                    | Ödenen Miktar
+                                    span(title="Zorunlu").text-danger *
+                                input#odenenucret(type="number" name="odenenucret" placeholder="0").form-control
+                        .row.mb-2
+                            .col-12
+                                label(for="aciklama")
+                                    | İşleme Dair Not
+                                    span(title="Zorunlu").text-danger *
+                                textarea#aciklama(name="aciklama").form-control
+                        .row.mb-2
+                            .col-12.col-md-3.mb-2.mb-md-0
+                                label(for="doktor")
+                                    | Doktor Seçiniz
+                                    span(title="Zorunlu").text-danger *
+                                select#doktor(name="doktor").form-control
+                                    each doktor in doktorlar
+                                        option(value=doktor._id) #{doktor.name}
+                            .col-12.col-md-3.mb-2.mb-md-0
+                                label(for="randevutarih")
+                                    | Randevu Saati
+                                    span(title="Zorunlu").text-danger *
+                                input#randevutarih(type="datetime-local" name="randevutarih").form-control
+                            .col-12.col-md-3.mb-2.mb-md-0
+                                label(for="tel")
+                                    | Telefon Numarası
+                                    span(title="Zorunlu").text-danger *
+                                input#tel(type="tel" name="tel" placeholder="05xxxxxxxxx" maxlength="11").form-control
+
+                        .row.mt-4
+                            .col-md-9
+                            .col-12.col-md-3
+                                button(type="submit").btn.btn-sm.btn-outline-primary.col-12
+                                    i.bx.bx-user-plus
+                                    | Hastayı Kaydet
 
 block jscode
     script.
@@ -89,5 +86,5 @@ block jscode
 
                 return `${year}-${month}-${day}T${hours}:${minutes}`;
             }
-            $('#randevuTarih').val(formatLocalTime(nowTurkey));
+            $('#randevutarih').val(formatLocalTime(nowTurkey));
         });

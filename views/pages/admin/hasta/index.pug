@@ -22,11 +22,10 @@ block content
                                     th #
                                     th Doktor Adı
                                     th Hasta Adı
-                                    th Tanı
-                                    th Tanı Açıklaması
+                                    th İşlem
+                                    th İşlem Açıklaması
                                     th Randevu Tarihi
-                                    th Telefon 
-                                    th T.C.
+                                    th Telefon
                                     th Kalan Borç
                                     th İşlemler
                             tbody
@@ -48,14 +47,14 @@ block content
                                 each hasta, i in hastalar
                                     tr
                                         th= (i+1)
-                                        th= hasta.doktor
+                                        th= hasta.doktor.name
                                         td= hasta.adsoyad
-                                        td= hasta.islem
+                                        td= hasta.islem.ad
                                         td(style="width: 200px;")= hasta.aciklama
-                                        td= generateRandomDate()
+                                        td= hasta.randevu_tarih
                                         td
                                             a(href="tel:#{maskPhoneNumber(hasta.tel)}") #{maskPhoneNumber(hasta.tel)}
-                                        td= randomIntFromInterval(10000000000, 99999999999)
+
                                         if(hasta.odenen_ucret >= hasta.ucret)
                                             td.bg-success.text-white.text-center Ödendi
                                         else
@@ -63,7 +62,7 @@ block content
                                         td
                                             button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
                                                 i.bx.bx-edit
-                                            button.btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1
+                                            button(data-id=hasta._id).btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1.hasta-sil
                                                 i.bx.bx-trash
 
 
@@ -83,12 +82,29 @@ block jscode
     script(src="/assets/plugins/datatable/js/dataTables.bootstrap5.min.js")
     script.
         $(document).ready(function (){
+            $('.hasta-sil').on('click', function () {
+                var hastaId = $(this).attr('data-id');
+                var url = '/Admin/Hastalar/Sil';
+                var sor = confirm('Bu hastayı silmek istiyor musunuz?');
+                if (sor) {
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {
+                            hastaid: hastaId
+                        },
+                        success: function (result) {
+                            location.reload();
+                        }
+                    });
+                }
+            })
             $('#hastalar').DataTable( {
                 lengthChange: false,
                 language: {
                     url: "https://cdn.datatables.net/plug-ins/2.3.2/i18n/tr.json",
                 },
-                "columnDefs": [
+                columnDefs: [
                     {
                         "targets": 4,
                         "render": function ( data, type, row ) {
