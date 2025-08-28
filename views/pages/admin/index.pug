@@ -7,8 +7,7 @@ block content
                 .card-header
                     .d-flex.align-items-center
                     div
-                        h6.mb-0 Randevusu Yaklaşanlar
-
+                        h6.mb-0 Randevusu Yaklaşanlar (3 Gün)
                 .card-body
                     .table-responsive
                         table.table.align-middle.mb-0#randevuYak
@@ -20,48 +19,38 @@ block content
                                     th İşlem
                                     th Randevu Tarihi
                                     th Telefon 
-                                    th T.C.
+                                    th Kalan Ücret
                                     th İşlemler
                             tbody
-                                tr
-                                    th 1
-                                    th Onur YOLBAŞ
-                                    td Faik TURHAN
-                                    td Test hastalık adı
-                                    td 12.08.2025
-                                    td 0532 394 83 43
-                                    td 74372319232
-                                    td
-                                        button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
-                                            i.bx.bx-edit
-                                        button.btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1
-                                            i.bx.bx-trash
-                                tr
-                                    th 2
-                                    th Onur YOLBAŞ
-                                    td Abdullah YILDIZ
-                                    td Test hastalık adı
-                                    td 12.08.2025
-                                    td 0532 394 83 43
-                                    td 74372319232
-                                    td
-                                        button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
-                                            i.bx.bx-edit
-                                        button.btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1
-                                            i.bx.bx-trash
-                                tr
-                                    th 3
-                                    th Onur YOLBAŞ
-                                    td Serkan KARTAL
-                                    td Test hastalık adı
-                                    td 12.08.2025
-                                    td 0532 394 83 43
-                                    td 74372319232
-                                    td
-                                        button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
-                                            i.bx.bx-edit
-                                        button.btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1
-                                            i.bx.bx-trash
+                                - function formatlaTarih(tarihMetni) {
+                                -     const tarih = new Date(tarihMetni);
+                                -     const gun = String(tarih.getDate()).padStart(2, '0');
+                                -     const ay = String(tarih.getMonth() + 1).padStart(2, '0'); 
+                                -     const yil = tarih.getFullYear();
+                                -     const saat = String(tarih.getHours()).padStart(2, '0');
+                                -     const dakika = String(tarih.getMinutes()).padStart(2, '0');
+                                -     return `${gun}.${ay}.${yil} ${saat}:${dakika}`;
+                                - }
+
+
+                                each randevu, i in yaklasanlar
+                                    tr
+                                        th= (i + 1)
+                                        th= randevu.doktor.name
+                                        td= randevu.adsoyad
+                                        td= randevu.islem.ad
+                                        td= formatlaTarih(randevu.randevu_tarih)
+                                        td= randevu.tel
+                                        if (randevu.ucret - randevu.odenen_ucret) > 0
+                                            td.bg-danger.text-white.text-center #{randevu.ucret - randevu.odenen_ucret} ₺
+                                        else
+                                            td.bg-success.text-white.text-center Ödendi
+                                        td
+                                            button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
+                                                i.bx.bx-edit
+                                            button.btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1
+                                                i.bx.bx-trash
+
 
     .row
         .col-12.col-md-10.d-flex.mx-auto
@@ -174,6 +163,9 @@ block jscode
     script(src='/assets/plugins/datatable/js/dataTables.bootstrap5.min.js')
     script.
         $(document).ready(function () {
+
+
+
             var table = $('#hastaAlimTab').DataTable({
                 lengthChange: false,
                 language: {

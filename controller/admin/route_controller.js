@@ -1,12 +1,42 @@
 const c_log = require('../../helpers/c_log');
+const diffDate = require('../../helpers/date_diff');
 const m_admin = require('../../models/m_admin');
 const m_hasta = require('../../models/m_hasta');
 const m_islem = require('../../models/m_islem');
 class AdminRoute {
-    index(req, res) {
+   // Kontrolcü fonksiyonunun güncellenmiş hali
+async index(req, res) {
+    try {
         var name = req.payload.name;
-        res.render('pages/admin/index', { title: 'Admin', name: name });
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const threeDaysLater = new Date();
+        threeDaysLater.setDate(today.getDate() + 3);
+        threeDaysLater.setHours(23, 59, 59, 999);
+        
+        
+        const yaklasanlar = await m_hasta
+            .find({ 
+                randevu_tarih: { 
+                    $gte: today, 
+                    $lte: threeDaysLater 
+                } 
+            })
+            .populate('doktor')
+            .populate('islem')
+            .sort({ randevu_tarih: 1 });
+
+        return res.render('pages/admin/index', { 
+            title: 'Admin', 
+            name: name,
+            yaklasanlar: yaklasanlar
+        });
+
+    } catch (error) {
+        c_log("ADMIN INDEX", error);
+        return res.redirect('/Admin');
     }
+}
     //HASTALAR
     async hastalar(req, res) {
         try {
