@@ -12,7 +12,19 @@ const user = new mongoose.Schema({
     name: {
         type: String,
         required: true
-    }
+    },
+    aylik_kazanc: [
+        {
+            ay: {
+                type: String,
+                required: true
+            },
+            kazanc: {
+                type: Number,
+                required: true
+            }
+        }
+    ]
 });
 
 module.exports = mongoose.model('admin', user);

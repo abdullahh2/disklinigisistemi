@@ -1,5 +1,6 @@
 const c_log = require('../../helpers/c_log');
-const diffDate = require('../../helpers/date_diff');
+const tumDoktorlarinAylikKazanciniGetir = require('../../helpers/kazanc_hesapla');
+
 const m_admin = require('../../models/m_admin');
 const m_hasta = require('../../models/m_hasta');
 const m_islem = require('../../models/m_islem');
@@ -14,6 +15,8 @@ async index(req, res) {
         threeDaysLater.setDate(today.getDate() + 3);
         threeDaysLater.setHours(23, 59, 59, 999);
         
+        const aylikKazancVerisi = await tumDoktorlarinAylikKazanciniGetir();
+
         
         const yaklasanlar = await m_hasta
             .find({ 
@@ -29,7 +32,8 @@ async index(req, res) {
         return res.render('pages/admin/index', { 
             title: 'Admin', 
             name: name,
-            yaklasanlar: yaklasanlar
+            yaklasanlar: yaklasanlar,
+            aylikKazanc: aylikKazancVerisi,
         });
 
     } catch (error) {

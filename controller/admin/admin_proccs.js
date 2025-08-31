@@ -4,6 +4,7 @@ const m_islem = require('../../models/m_islem');
 const m_hasta = require('../../models/m_hasta');
 const jwt = require('jsonwebtoken');
 const { WRXcrypt, WRXdecrypt } = require('../../helpers/wrx_crypt');
+const kazanc_ekle = require('../../helpers/kazanc_ekle');
 
 class AdminProccs {
 
@@ -28,7 +29,8 @@ class AdminProccs {
             }, process.env.SECRET_KEY);
             res.cookie('token', token);
             
-            return res.render('pages/admin/index', { title: 'Admin', name: user.name });
+            res.render('pages/admin/index', { title: 'Admin', name: user.name });
+            return res.redirect('/Admin');
             
         } catch (error) {
             c_log("ADMIN LOGIN", error);
@@ -105,6 +107,7 @@ class AdminProccs {
                 odenen_ucret: req.body.odenenucret
             });
             await hasta.save();
+            await kazanc_ekle(req.body.doktor, req.body.ucret);
             return res.redirect('/Admin/Hastalar');
         } catch (error) {
             c_log("HASTA EKLE ADMIN", error);
