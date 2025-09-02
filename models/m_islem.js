@@ -8,6 +8,10 @@ const islem = new mongoose.Schema({
     ucret: {
         type: Number,
         required: true
+    },
+    hatirlatici: {
+        type: Boolean,
+        default: true
     }
 });
 

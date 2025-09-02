@@ -67,7 +67,8 @@ class AdminProccs {
         try {
             const islem = new m_islem({
                 ad: req.body.ad,
-                ucret: req.body.ucret
+                ucret: req.body.ucret,
+                hatirlatici: req.body.hatirlatici
             });
             await islem.save();
             return res.redirect('/Admin/Islem');
@@ -87,7 +88,12 @@ class AdminProccs {
 
     async hastaSil(req, res) {
         try {
-            await m_hasta.findByIdAndDelete(req.body.hastaid);
+            const hasta = await m_hasta.findById(req.body.hastaid);
+            
+            if (hasta) {
+                await kazanc_ekle(hasta.doktor, -hasta.ucret);
+                await m_hasta.findByIdAndDelete(req.body.hastaid);
+            }
             return res.redirect('/Admin/Hastalar');
         } catch (error) {
             c_log("HASTA SIL ADMIN", error);
@@ -101,6 +107,7 @@ class AdminProccs {
                 islem: req.body.islem,
                 doktor: req.body.doktor,
                 randevu_tarih: req.body.randevutarih,
+                hatirlaticitarih: req.body.hatirlaticitarih,
                 tel: req.body.tel,
                 aciklama: req.body.aciklama,
                 ucret: req.body.ucret,

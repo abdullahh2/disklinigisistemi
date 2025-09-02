@@ -17,6 +17,12 @@ block content
                             .col-12.col-md-4.mb-2.mb-md-0
                                 label(for="ucret") İşlem Ücreti
                                 input#ucret(type="number" name="ucret" placeholder="İşlem ücreti giriniz").form-control
+                            .col-12.col-md-4.mb-2.mb-md-0
+                                label(for="hatirlatici") İşlem Hatırlatıcısı
+                                select.form-control(name="hatirlatici" id="hatirlatici")
+                                    option(value="1" selected) Hatırlatıcı Var
+                                    option(value="0") Hatırlatıcı Yok
+
 
 
 

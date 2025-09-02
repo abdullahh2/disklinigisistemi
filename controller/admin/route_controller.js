@@ -1,14 +1,15 @@
 const c_log = require('../../helpers/c_log');
+const g_json = require('../../helpers/general_params');
 const tumDoktorlarinAylikKazanciniGetir = require('../../helpers/kazanc_hesapla');
 
 const m_admin = require('../../models/m_admin');
 const m_hasta = require('../../models/m_hasta');
 const m_islem = require('../../models/m_islem');
 class AdminRoute {
-   // Kontrolcü fonksiyonunun güncellenmiş hali
+   
 async index(req, res) {
     try {
-        var name = req.payload.name;
+        
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const threeDaysLater = new Date();
@@ -29,11 +30,15 @@ async index(req, res) {
             .populate('islem')
             .sort({ randevu_tarih: 1 });
 
+        const hatirlatilacak_hastalar = await m_hasta.find({  hatirlaticitarih: { $ne: null,  }  })
+            .populate('doktor')
+            .populate('islem').sort({ hatirlaticitarih: 1 });
+
         return res.render('pages/admin/index', { 
-            title: 'Admin', 
-            name: name,
-            yaklasanlar: yaklasanlar,
-            aylikKazanc: aylikKazancVerisi,
+            ...g_json("Admin", req),
+            yaklasanlar,
+            aylikKazancVerisi,
+            hatirlatilacak_hastalar
         });
 
     } catch (error) {
@@ -44,9 +49,9 @@ async index(req, res) {
     //HASTALAR
     async hastalar(req, res) {
         try {
-            var name = req.payload.name;
+            
             const hastalar = await m_hasta.find().populate('doktor').populate('islem').sort({ randevu_tarih: -1 });
-            return res.render('pages/admin/hasta/index', { title: 'Hastalar', name: name, hastalar: hastalar });
+            return res.render('pages/admin/hasta/index', { ...g_json("Hastalar", req), hastalar: hastalar });
         } catch (error) {
             c_log("ADMIN HASTALAR", error);
             return res.redirect('/Admin');
@@ -55,10 +60,9 @@ async index(req, res) {
 
     async hastaEkle(req, res) {
         try {
-            var name = req.payload.name;
             const islemler = await m_islem.find();
             const doktorlar = await m_admin.find();
-            res.render('pages/admin/hasta/hasta_ekle', { title: 'Hasta Ekle', name: name, doktorlar: doktorlar, islemler: islemler });
+            res.render('pages/admin/hasta/hasta_ekle', { ...g_json("Hasta Ekle", req), doktorlar: doktorlar, islemler: islemler });
         } catch (error) {
             c_log("ADMIN HASTA EKLE", error);
             return res.redirect('/Admin');
@@ -68,9 +72,9 @@ async index(req, res) {
     async doktor(req, res) {
 
         try {
-            var name = req.payload.name;
+            
             const doktorlar = await m_admin.find();
-            res.render('pages/admin/doktor/index', { title: 'Doktorlar', doktorlar: doktorlar, name: name });
+            res.render('pages/admin/doktor/index', { ...g_json("Doktorlar", req), doktorlar: doktorlar});
         } catch (error) {
             c_log("ADMIN DOKTOR", error);
             return res.redirect('/Admin/Login');
@@ -79,16 +83,16 @@ async index(req, res) {
     }
 
     doktorEkle(req, res) {
-        var name = req.payload.name;
-        res.render('pages/admin/doktor/doktor_ekle', { title: 'Doktor Ekle', name: name });
+        
+        res.render('pages/admin/doktor/doktor_ekle', { ...g_json("Doktor Ekle", req) });
     }
 
     //İŞLEMLER
     async islem(req, res) {
         try {
-            var name = req.payload.name;
+            
             const islemler = await m_islem.find();
-            res.render('pages/admin/islemler/index', { title: 'İşlemler', name: name, islemler: islemler });
+            res.render('pages/admin/islemler/index', { ...g_json("İşlemler", req), islemler: islemler });
         } catch (error) {
             c_log("ADMIN ISLEMLER", error);
             return res.redirect('/Admin');
@@ -96,8 +100,8 @@ async index(req, res) {
     }
 
     islemEkle(req, res) {
-        var name = req.payload.name;
-        res.render('pages/admin/islemler/islem_ekle', { title: 'İşlem Ekle', name: name });
+     
+        res.render('pages/admin/islemler/islem_ekle', { ...g_json("İşlem Ekle", req) });
     }
 
 

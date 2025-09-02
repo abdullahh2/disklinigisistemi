@@ -29,7 +29,10 @@ const hasta = new mongoose.Schema({
     odenen_ucret: {
         type: Number,
         required: true
-    }
+    },
+    hatirlaticitarih: Date,
+      
+    
 });
 
 module.exports = mongoose.model('Hastalar', hasta);

@@ -22,7 +22,7 @@ block content
                                 select#islem(name="islem").form-control
                                     option(selected disabled) İşlem Seçiniz 
                                     each islem in islemler
-                                        option(value=islem._id data-ucret=islem.ucret) #{islem.ad}
+                                        option(value=islem._id data-ucret=islem.ucret data-hatirlatici=islem.hatirlatici ? 'true' : 'false') #{islem.ad}
 
                             .col-6.col-md-2
                                 label(for="ucret")
@@ -53,6 +53,12 @@ block content
                                     | Randevu Saati
                                     span(title="Zorunlu").text-danger *
                                 input#randevutarih(type="datetime-local" name="randevutarih").form-control
+
+                            .col-12.col-md-3.mb-2.mb-md-0.d-none#hatirlaticialan
+                                label(for="hatirlaticitarih")
+                                    | Hatırlatma Tarihi
+                                    span(title="Zorunlu").text-danger *
+                                input#hatirlaticitarih(type="datetime-local" name="hatirlaticitarih").form-control
                             .col-12.col-md-3.mb-2.mb-md-0
                                 label(for="tel")
                                     | Telefon Numarası
@@ -72,6 +78,15 @@ block jscode
             $('#islem').on('change', function () {
                 var ucret = $(this).find(':selected').data('ucret');
                 $('#ucret').val(ucret);
+
+                var hatirlatici = $(this).find(':selected').data('hatirlatici');
+
+                if (hatirlatici == true) {
+                    $('#hatirlaticialan').removeClass('d-none');
+                } else {
+                    $('#hatirlaticialan').addClass('d-none');
+                }
+
             });
 
             const nowUtc = new Date();
