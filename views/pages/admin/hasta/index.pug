@@ -1,6 +1,5 @@
 extends ../../../layout
 
-
 block content
     .row
         .col-12.col-md-10.d-flex.mx-auto
@@ -30,8 +29,6 @@ block content
                                     th Kalan Borç
                                     th İşlemler
                             tbody
-
-
                                 - const maskPhoneNumber = (phoneNumber) => {
                                 -    const cleaned = ('' + phoneNumber).replace(/\D/g, '');
                                 -    if (cleaned.length < 10 || cleaned.length > 11) {
@@ -46,6 +43,7 @@ block content
                                 - };
 
                                 - function formatlaTarih(tarihMetni) {
+                                -     if (!tarihMetni) return "Tarih Yok";
                                 -     const tarih = new Date(tarihMetni);
                                 -     const gun = String(tarih.getDate()).padStart(2, '0');
                                 -     const ay = String(tarih.getMonth() + 1).padStart(2, '0'); 
@@ -55,19 +53,25 @@ block content
                                 -     return `${gun}.${ay}.${yil} ${saat}:${dakika}`;
                                 - }
 
-
                                 each hasta, i in hastalar
                                     tr
-                                        th= (i+1)
-                                        th= hasta.doktor.name
+                                        td.text-center= (i+1)
+                                        td= hasta.doktor.name
                                         td= hasta.adsoyad
-                                        td= hasta.islem.ad
+                                        td
+                                            ul.list-unstyled.mb-0
+                                                each isl in hasta.islem
+                                                    //- Eğer işlem (nadiren de olsa) silinmişse sayfanın çökmesini engelle
+                                                    if isl.islem
+                                                        li #{isl.islem.ad} (#{isl.adet} adet)
+                                                    else
+                                                        li.text-danger Silinmiş İşlem (#{isl.adet} adet)
                                         td(style="width: 200px;")= hasta.aciklama
                                         td= formatlaTarih(hasta.randevu_tarih)
                                         if hasta.hatirlaticitarih
                                             td= formatlaTarih(hasta.hatirlaticitarih)
                                         else
-                                            td.text-danger= "Hatırlatıcı ayarlanmadı"
+                                            td.text-center.text-danger -
                                         td
                                             a(href="tel:#{maskPhoneNumber(hasta.tel)}") #{maskPhoneNumber(hasta.tel)}
 
@@ -75,13 +79,79 @@ block content
                                             td.bg-success.text-white.text-center Ödendi
                                         else
                                             td.bg-danger.text-white.text-center #{hasta.ucret - hasta.odenen_ucret} ₺
-                                        td
-                                            button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
+                                        td.text-center
+                                            // DÜZENLEME BUTONU GÜNCELLEMESİ
+                                            // İşlem listesini JSON formatında data attribute'üne ekledik
+                                            a(href="#"
+                                                class="btn btn-sm btn-outline-info edit-hasta-btn" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#editHastaModal"
+                                                data-id=hasta._id
+                                                data-adsoyad=hasta.adsoyad
+                                                data-tel=hasta.tel
+                                                data-doktor-id=hasta.doktor._id
+                                                data-randevu=hasta.randevu_tarih
+                                                data-ucret=hasta.ucret
+                                                data-odenen=hasta.odenen_ucret
+                                                data-aciklama=hasta.aciklama
+                                                data-islemler=JSON.stringify(hasta.islem)
+                                            )
                                                 i.bx.bx-edit
-                                            button(data-id=hasta._id).btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1.hasta-sil
+                                            button(data-id=hasta._id).btn.btn-outline-danger.btn-sm.m-1.hasta-sil
                                                 i.bx.bx-trash
 
 
+            // MODAL HTML YAPISI (GÜNCELLENDİ)
+            #editHastaModal.modal.fade(tabindex="-1" aria-labelledby="editHastaModalLabel" aria-hidden="true")
+                .modal-dialog.modal-lg
+                    .modal-content
+                        .modal-header
+                            h5#editHastaModalLabel.modal-title Hasta Bilgilerini Düzenle
+                            button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+                        .modal-body
+                            //- YENİ: Modal içine işlem listesini göstermek için alan eklendi
+                            h6.mb-2 Seçili İşlemler
+                            #edit-islem-listesi.mb-3.p-2.border.rounded
+                                //- Bu alan JavaScript ile doldurulacak
+                            hr
+
+                            form#editHastaForm(method="POST" action="/Admin/Hastalar/Guncelle")
+                                // Gizli input, hangi hastayı güncellediğimizi bilmek için
+                                input#edit-hasta-id(type="hidden" name="hastaid")
+
+                                .row.mb-3
+                                    .col-md-6
+                                        label(for="edit-adsoyad") Hasta Adı Soyadı
+                                        input#edit-adsoyad.form-control(type="text" name="adsoyad" required)
+                                    .col-md-6
+                                        label(for="edit-tel") Telefon Numarası
+                                        input#edit-tel.form-control(type="tel" name="tel" required)
+
+                                .row.mb-3
+                                    .col-md-6
+                                        label(for="edit-doktor") Doktor Seçiniz
+                                        select#edit-doktor.form-control(name="doktor" required)
+                                            each doktor in doktorlar
+                                                option(value=doktor._id) #{doktor.name}
+                                    .col-md-6
+                                        label(for="edit-randevutarih") Randevu Tarihi
+                                        input#edit-randevutarih.form-control(type="datetime-local" name="randevutarih" required)
+
+                                .row.mb-3
+                                    .col-md-6
+                                        label(for="edit-ucret") Toplam Ücret
+                                        input#edit-ucret.form-control(type="number" name="ucret" required)
+                                    .col-md-6
+                                        label(for="edit-odenenucret") Ödenen Miktar
+                                        input#edit-odenenucret.form-control(type="number" name="odenenucret" required)
+
+                                .mb-3
+                                    label(for="edit-aciklama") Açıklama / Not
+                                    textarea#edit-aciklama.form-control(name="aciklama" rows="3")
+
+                                .modal-footer
+                                    button.btn.btn-secondary(type="button" data-bs-dismiss="modal") Kapat
+                                    button.btn.btn-primary(type="submit") Değişiklikleri Kaydet
 
 
 
@@ -97,8 +167,17 @@ block jscode
     script(src="/assets/plugins/datatable/js/jquery.dataTables.min.js") 
     script(src="/assets/plugins/datatable/js/dataTables.bootstrap5.min.js")
     script.
+        // Tarih formatını 'YYYY-MM-DDTHH:mm' şekline çeviren yardımcı fonksiyon
+        function formatISODateForInput(isoDateString) {
+            if (!isoDateString) return '';
+            const date = new Date(isoDateString);
+            date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+            return date.toISOString().slice(0, 16);
+        }
+
         $(document).ready(function (){
             $('.hasta-sil').on('click', function () {
+
                 var hastaId = $(this).attr('data-id');
                 var url = '/Admin/Hastalar/Sil';
                 var sor = confirm('Bu hastayı silmek istiyor musunuz?');
@@ -114,7 +193,8 @@ block jscode
                         }
                     });
                 }
-            })
+            });
+
             $('#hastalar').DataTable( {
                 lengthChange: false,
                 language: {
@@ -126,11 +206,56 @@ block jscode
                         "render": function ( data, type, row ) {
                             var fullText = data;
                             if (type === 'display' && fullText.length > 100) {
-                                return '<span title="' + fullText + '">' + fullText.substr( 0, 100 ) + '…</span>';
+                                return '<span class="d-inline-block text-truncate" style="max-width: 200px;" title="' + fullText + '">' + fullText + '</span>';
                             }
                             return fullText;
                         }
                     }
                 ]
             });
-        })
+
+            // YENİ EKLENEN JAVASCRIPT KODU: Modal'ı Doldurma
+            $('.edit-hasta-btn').on('click', function() {
+                // Tıklanan butondaki data-* attribute'lerinden verileri oku
+                const hastaId = $(this).data('id');
+                const adsoyad = $(this).data('adsoyad');
+                const tel = $(this).data('tel');
+                const doktorId = $(this).data('doktor-id');
+                const randevu = $(this).data('randevu');
+                const ucret = $(this).data('ucret');
+                const odenen = $(this).data('odenen');
+                const aciklama = $(this).data('aciklama');
+                // İşlemler verisini JSON olarak oku
+                const islemler = $(this).data('islemler');
+
+                // 1. Modal içindeki standart form elemanlarını doldur
+                $('#edit-hasta-id').val(hastaId);
+                $('#edit-adsoyad').val(adsoyad);
+                $('#edit-tel').val(tel);
+                $('#edit-doktor').val(doktorId);
+                $('#edit-randevutarih').val(formatISODateForInput(randevu));
+                $('#edit-ucret').val(ucret);
+                $('#edit-odenenucret').val(odenen);
+                $('#edit-aciklama').val(aciklama);
+
+                // 2. Modal içindeki işlem listesini doldur
+                const islemListesiAlani = $('#edit-islem-listesi');
+                islemListesiAlani.empty(); // Önceki verileri temizle
+
+                if (islemler && islemler.length > 0) {
+                    let islemHtml = '<ul class="list-group">';
+                    islemler.forEach(function(isl) {
+                        // ÖNEMLİ KONTROL: İşlemin var olup olmadığını kontrol et
+                        if (isl.islem) {
+                            islemHtml += `<li class="list-group-item">${isl.islem.ad} (${isl.adet} adet)</li>`;
+                        } else {
+                            islemHtml += `<li class="list-group-item text-danger">Silinmiş İşlem (${isl.adet} adet)</li>`;
+                        }
+                    });
+                    islemHtml += '</ul>';
+                    islemListesiAlani.html(islemHtml);
+                } else {
+                    islemListesiAlani.html('<p class="text-muted">Bu hastaya atanmış işlem bulunmamaktadır.</p>');
+                }
+            });
+        });

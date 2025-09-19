@@ -10,9 +10,11 @@ router.get('/', route.index);
 //HASTALAR
 router.get('/Hastalar', route.hastalar);
 router.get('/Hastalar/Ekle', route.hastaEkle);
-router.post('/Hastalar/Ekle', proccs.hastaEkle);
-router.post('/Hastalar/Sil', proccs.hastaSil);
+router.post('/Hastalar/Ekle', proccs.hastaEkle.bind(proccs));
+router.post('/Hastalar/Sil', proccs.hastaSil.bind(proccs));
 
+router.post('/Hastalar/Guncelle', proccs.hastaGuncelle.bind(proccs));
+ 
 // DOKTOR
 router.get('/Doktor', route.doktor);
 router.get('/Doktor/Ekle', route.doktorEkle);

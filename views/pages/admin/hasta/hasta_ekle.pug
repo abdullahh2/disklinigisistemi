@@ -8,7 +8,7 @@ block content
             hr
             .card
                 .card-body
-                    form(method="POST") 
+                    form(method="POST" action="/Admin/Hastalar/Ekle") 
                         .row.mb-2
                             .col-12.col-md-4.mb-2.mb-md-0
                                 label(for="adsoyad")
@@ -19,10 +19,12 @@ block content
                                 label(for="islem")
                                     | İşlem Seçiniz
                                     span(title="Zorunlu").text-danger *
-                                select#islem(name="islem").form-control
-                                    option(selected disabled) İşlem Seçiniz 
+                                select#islem.form-control.select2(multiple)
                                     each islem in islemler
                                         option(value=islem._id data-ucret=islem.ucret data-hatirlatici=islem.hatirlatici ? 'true' : 'false') #{islem.ad}
+                        .row.mb-2
+                            .col-12
+                                #secilen-islemler
 
                             .col-6.col-md-2
                                 label(for="ucret")
@@ -75,31 +77,77 @@ block content
 block jscode
     script.
         $(document).ready(function () {
-            $('#islem').on('change', function () {
-                var ucret = $(this).find(':selected').data('ucret');
-                $('#ucret').val(ucret);
+            $('#islem').select2({
+                theme: 'bootstrap4',
+                placeholder: "İşlem Seçiniz",
+                multiple: true,
+                allowClear: Boolean($(this).data('allow-clear')),
+            });
 
-                var hatirlatici = $(this).find(':selected').data('hatirlatici');
+            function calculateTotal() {
+                var totalUcret = 0;
+                var showHatirlatici = false;
+                $('#secilen-islemler .islem-item').each(function() {
+                    var ucret = $(this).data('ucret');
+                    var adet = $(this).find('.islem-adet').val();
+                    totalUcret += ucret * adet;
+                    if ($(this).data('hatirlatici')) {
+                        showHatirlatici = true;
+                    }
+                });
+                $('#ucret').val(totalUcret);
 
-                if (hatirlatici == true) {
+                if (showHatirlatici) {
                     $('#hatirlaticialan').removeClass('d-none');
                 } else {
                     $('#hatirlaticialan').addClass('d-none');
                 }
+            }
 
+            $('#islem').on('change', function () {
+                $('#secilen-islemler').empty();
+                $(this).find(':selected').each(function() {
+                    var islem_id = $(this).val();
+                    var islem_ad = $(this).text();
+                    var islem_ucret = $(this).data('ucret');
+                    var islem_hatirlatici = $(this).data('hatirlatici');
+                    var islem_item = `
+                        <div class="row mb-2 islem-item" data-id="${islem_id}" data-ucret="${islem_ucret}" data-hatirlatici="${islem_hatirlatici}">
+                            <div class="col-6">${islem_ad}</div>
+                            <div class="col-4">
+                                <input type="number" class="form-control islem-adet" name="islem[${islem_id}][adet]" value="1" min="1">
+                            </div>
+                                <div class="col-2">
+                                    <button type="button" class="btn btn-sm btn-danger islem-sil">Sil</button>
+                            </div>
+                        </div>
+                    `;
+                    $('#secilen-islemler').append(islem_item);
+                });
+                calculateTotal();
             });
 
-            const nowUtc = new Date();
-            const turkeyTimezoneOffset = 3 * 60 * 60 * 1000;
-            const nowTurkey = new Date(nowUtc.getTime() + turkeyTimezoneOffset);
-            function formatLocalTime(date) {
-                const year = date.getUTCFullYear();
-                const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
-                const day = date.getUTCDate().toString().padStart(2, '0');
-                const hours = date.getUTCHours().toString().padStart(2, '0');
-                const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+            $('#secilen-islemler').on('change', '.islem-adet', function() {
+                calculateTotal();
+            });
 
-                return `${year}-${month}-${day}T${hours}:${minutes}`;
-            }
-            $('#randevutarih').val(formatLocalTime(nowTurkey));
+            $('#secilen-islemler').on('click', '.islem-sil', function() {
+                var islem_id = $(this).closest('.islem-item').data('id');
+                $("#islem option[value='"+islem_id+"']").prop("selected", false);
+                $('#islem').trigger('change');
+            });
+
+                const nowUtc = new Date();
+                const turkeyTimezoneOffset = 3 * 60 * 60 * 1000;
+                const nowTurkey = new Date(nowUtc.getTime() + turkeyTimezoneOffset);
+                function formatLocalTime(date) {
+                    const year = date.getUTCFullYear();
+                    const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+                    const day = date.getUTCDate().toString().padStart(2, '0');
+                    const hours = date.getUTCHours().toString().padStart(2, '0');
+                    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+
+                    return `${year}-${month}-${day}T${hours}:${minutes}`;
+                }
+                $('#randevutarih').val(formatLocalTime(nowTurkey));
         });

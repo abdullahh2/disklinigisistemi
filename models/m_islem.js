@@ -15,4 +15,4 @@ const islem = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Islem', islem);
+module.exports = mongoose.model('islem', islem);

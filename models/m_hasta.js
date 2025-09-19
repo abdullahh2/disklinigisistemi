@@ -17,10 +17,16 @@ const hasta = new mongoose.Schema({
         type: Date,
         required: true
     },
-    islem: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Islem'
-    },
+    islem: [{
+       islem: {
+           type: mongoose.Schema.Types.ObjectId,
+           ref: 'islem'
+       },
+       adet: {
+           type: Number,
+           default: 1
+       }
+    }],
     aciklama: String,
     ucret: {
         type: Number,

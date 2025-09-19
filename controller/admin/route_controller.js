@@ -20,19 +20,19 @@ async index(req, res) {
 
         
         const yaklasanlar = await m_hasta
-            .find({ 
-                randevu_tarih: { 
-                    $gte: today, 
-                    $lte: threeDaysLater 
-                } 
+            .find({
+                randevu_tarih: {
+                    $gte: today,
+                    $lte: threeDaysLater
+                }
             })
             .populate('doktor')
-            .populate('islem')
+            .populate({ path: 'islem.islem', model: 'islem' })
             .sort({ randevu_tarih: 1 });
 
         const hatirlatilacak_hastalar = await m_hasta.find({  hatirlaticitarih: { $ne: null,  }  })
             .populate('doktor')
-            .populate('islem').sort({ hatirlaticitarih: 1 });
+            .populate({ path: 'islem.islem', model: 'islem' }).sort({ hatirlaticitarih: 1 });
 
         return res.render('pages/admin/index', { 
             ...g_json("Admin", req),
@@ -50,8 +50,17 @@ async index(req, res) {
     async hastalar(req, res) {
         try {
             
-            const hastalar = await m_hasta.find().populate('doktor').populate('islem').sort({ randevu_tarih: -1 });
-            return res.render('pages/admin/hasta/index', { ...g_json("Hastalar", req), hastalar: hastalar });
+            // İki veriyi aynı anda, paralel olarak çekiyoruz
+            const [hastalar, doktorlar] = await Promise.all([
+                m_hasta.find().populate('doktor').populate({ path: 'islem.islem', model: 'islem' }).sort({ randevu_tarih: -1 }),
+                m_admin.find().select('name').lean() // .lean() daha hızlıdır
+            ]);
+            
+            return res.render('pages/admin/hasta/index', { 
+                ...g_json("Hastalar", req), 
+                hastalar, 
+                doktorlar // Doktor listesini view'e gönderiyoruz
+            });
         } catch (error) {
             c_log("ADMIN HASTALAR", error);
             return res.redirect('/Admin');

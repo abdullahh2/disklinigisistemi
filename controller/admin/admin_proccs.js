@@ -4,17 +4,9 @@ const m_islem = require('../../models/m_islem');
 const m_hasta = require('../../models/m_hasta');
 const jwt = require('jsonwebtoken');
 const { WRXcrypt, WRXdecrypt } = require('../../helpers/wrx_crypt');
-const kazanc_ekle = require('../../helpers/kazanc_ekle');
+//const kazanc_ekle = require('../../helpers/kazanc_ekle');
 
 class AdminProccs {
-
-    postAdmin(req, res) {
-        try {
-            
-        } catch (error) {
-            
-        }
-    }
 
     async login(req, res) {
         try {
@@ -48,7 +40,7 @@ class AdminProccs {
             await addAdmin.save();
             return res.redirect('/Admin/Doktor');
         } catch (error) {
-            c_log("FIRST SETTINGS", error);
+            c_log("Doktor Ekle Admin", error);
         }
     }
 
@@ -89,38 +81,176 @@ class AdminProccs {
     async hastaSil(req, res) {
         try {
             const hasta = await m_hasta.findById(req.body.hastaid);
-            
-            if (hasta) {
-                await kazanc_ekle(hasta.doktor, -hasta.ucret);
-                await m_hasta.findByIdAndDelete(req.body.hastaid);
+            if (!hasta) {
+                
+                return res.redirect('/Admin/Hastalar');
             }
+            
+            await this.doktorKazancGuncelle(hasta.doktor, -hasta.odenen_ucret, hasta.randevu_tarih);
+            
+            await m_hasta.findByIdAndDelete(req.body.hastaid);
+            
+            
             return res.redirect('/Admin/Hastalar');
+
         } catch (error) {
             c_log("HASTA SIL ADMIN", error);
+            
+            return res.redirect('/Admin/Hastalar');
         }
     }
 
-    async hastaEkle(req, res) {
-        try {
-            const hasta = new m_hasta({
-                adsoyad: req.body.adsoyad,
-                islem: req.body.islem,
-                doktor: req.body.doktor,
-                randevu_tarih: req.body.randevutarih,
-                hatirlaticitarih: req.body.hatirlaticitarih,
-                tel: req.body.tel,
-                aciklama: req.body.aciklama,
-                ucret: req.body.ucret,
-                odenen_ucret: req.body.odenenucret
-            });
-            await hasta.save();
-            await kazanc_ekle(req.body.doktor, req.body.ucret);
-            return res.redirect('/Admin/Hastalar');
-        } catch (error) {
-            c_log("HASTA EKLE ADMIN", error);
+
+    /**
+     * @param {string} doktorId - Güncellenecek doktorun ID'si
+     * @param {number} ucret - Eklenecek veya çıkarılacak ücret
+     * @param {Date} tarih - İşlemin yapıldığı tarih (ayı belirlemek için)
+     */
+    async doktorKazancGuncelle(doktorId, ucret, tarih) {
+        
+        const ay = tarih.toLocaleString('tr-TR', { month: 'long', year: 'numeric' });
+
+        
+        const updateResult = await m_admin.updateOne(
+            { _id: doktorId, 'aylik_kazanc.ay': ay },
+            { $inc: { 'aylik_kazanc.$.kazanc': ucret } }
+        );
+
+        
+        if (updateResult.modifiedCount === 0) {
+            await m_admin.updateOne(
+                { _id: doktorId },
+                { $push: { aylik_kazanc: { ay: ay, kazanc: ucret } } }
+            );
         }
     }
+
+
+    async hastaEkle(req, res) {
+        
+        try {
+            const {
+                adsoyad, islem: islemlerInput, doktor: doktorId, randevutarih,
+                hatirlaticitarih, tel, aciklama, odenenucret
+            } = req.body;
+
+
+            if (!islemlerInput || Object.keys(islemlerInput).length === 0) {
+                console.log("HATA: Formdan 'islemlerInput' verisi gelmedi veya boş.");
+                console.log("İşlem durduruldu. Sayfa yenileniyor.");
+                return res.redirect('/Admin/Hastalar/Ekle'); // Yönlendirme yolu kendinize göre /Hasta/Ekle olabilir
+            }
+            console.log("'islemlerInput' verisi kontrolü başarılı. Devam ediliyor...");
+
+            const islemIdleri = Object.keys(islemlerInput);
+            const bulunanIslemler = await m_islem.find({ '_id': { $in: islemIdleri } });
+
+            if (bulunanIslemler.length !== islemIdleri.length) {
+                console.log("HATA: Formdan gelen işlem ID'lerinden bazıları veritabanında bulunamadı.");
+                console.log("İşlem durduruldu. Sayfa yenileniyor.");
+                return res.redirect('/Admin/Hastalar/Ekle');
+            }
+            
+            const islemlerMap = new Map(bulunanIslemler.map(i => [i._id.toString(), i]));
+            let totalUcret = 0;
+            const hastaIslemleri = [];
+
+            for (const islemId of islemIdleri) {
+                const islemDetay = islemlerMap.get(islemId);
+                const adet = parseInt(islemlerInput[islemId].adet) || 1;
+                totalUcret += islemDetay.ucret * adet;
+                hastaIslemleri.push({ islem: islemId, adet: adet });
+            }
+            
+            console.log("Hesaplanan Toplam Ücret:", totalUcret);
+
+            const yeniHasta = new m_hasta({
+                adsoyad,
+                islem: hastaIslemleri,
+                doktor: doktorId,
+                randevu_tarih: randevutarih,
+                tel,
+                aciklama,
+                ucret: totalUcret,
+                odenen_ucret: odenenucret,
+                ...(hatirlaticitarih && { hatirlaticitarih })
+            });
+            
+            console.log("Veritabanına kaydedilecek yeni hasta nesnesi oluşturuldu.");
+            await yeniHasta.save();
+            console.log("Yeni hasta başarıyla veritabanına kaydedildi.");
+
+            await this.doktorKazancGuncelle(doktorId, odenenucret, new Date(randevutarih));
+            console.log("Doktor kazancı güncellendi.");
+            
+            console.log("TÜM İŞLEMLER BAŞARILI! Yönlendirme yapılıyor...");
+            return res.redirect('/Admin/Hastalar');
+
+        } catch (error) {
+            // --- LOG 3: HATA YAKALAMA ---
+            // Eğer try bloğu içinde herhangi bir yerde hata olursa, bu blok çalışır.
+            console.error("\n--- HATA YAKALANDI ---");
+            console.error("Hata Zamanı:", new Date().toLocaleTimeString());
+            console.error("Hatanın tam çıktısı:", error);
+            console.error("----------------------\n");
+            return res.redirect('/Admin/Hastalar/Ekle');
+        }
+    }
+
+    async hastaGuncelle(req, res) {
+        try {
+            const { 
+                hastaid, adsoyad, tel, randevutarih, doktor: yeniDoktorId, 
+                ucret: yeniUcret, odenenucret: yeniOdenenUcret, aciklama, hatirlaticitarih 
+            } = req.body;
+
+            // 1. Güncellenecek hastanın mevcut durumunu bul
+            const mevcutHasta = await m_hasta.findById(hastaid);
+            if (!mevcutHasta) {
+                // req.flash('error', 'Hasta bulunamadı.');
+                return res.redirect('/Admin/Hastalar');
+            }
+
+            const eskiDoktorId = mevcutHasta.doktor.toString();
+            const eskiUcret = mevcutHasta.odenen_ucret;
+            const eskiRandevuTarih = mevcutHasta.randevu_tarih;
+
+            
+            const doktorDegisti = eskiDoktorId !== yeniDoktorId;
+            const ucretDegisti = eskiUcret !== parseFloat(yeniOdenenUcret);
+
+            if (doktorDegisti || ucretDegisti) {
+                await this.doktorKazancGuncelle(eskiDoktorId, -eskiUcret, new Date(eskiRandevuTarih));
+                await this.doktorKazancGuncelle(yeniDoktorId, parseFloat(yeniOdenenUcret), new Date(randevutarih));
+            }
+
+            
+            const guncellenecekVeri = {
+                adsoyad,
+                tel,
+                randevu_tarih: randevutarih,
+                doktor: yeniDoktorId,
+                ucret: yeniUcret,
+                odenen_ucret: yeniOdenenUcret,
+                aciklama,
+                ...(hatirlaticitarih && { hatirlaticitarih })
+            };
+            
+            await m_hasta.findByIdAndUpdate(hastaid, guncellenecekVeri);
+
+            c_log("HASTA GÜNCELLENDİ", `Hasta ID: ${hastaid}`);
+            // req.flash('success', 'Hasta başarıyla güncellendi.');
+            return res.redirect('/Admin/Hastalar');
+
+        } catch (error) {
+            c_log("HASTA GÜNCELLEME HATASI", error);
+            // req.flash('error', 'Hasta güncellenirken bir hata oluştu.');
+            return res.redirect('/Admin/Hastalar');
+        }
+    }
+
 
 }
 
 module.exports = new AdminProccs();
+    
