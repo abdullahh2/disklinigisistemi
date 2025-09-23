@@ -1,6 +1,8 @@
 const c_log = require('../../helpers/c_log');
 const g_json = require('../../helpers/general_params');
+
 const tumDoktorlarinAylikKazanciniGetir = require('../../helpers/kazanc_hesapla');
+const tumDoktorlarinToplamKazanciniGetir = require('../../helpers/doktor_kazanc_getir');
 
 const m_admin = require('../../models/m_admin');
 const m_hasta = require('../../models/m_hasta');
@@ -9,45 +11,49 @@ const m_islem = require('../../models/m_islem');
 const conf = require('dotenv').config();
 class AdminRoute {
    
-async index(req, res) {
-    try {
-        
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const threeDaysLater = new Date();
-        threeDaysLater.setDate(today.getDate() + 3);
-        threeDaysLater.setHours(23, 59, 59, 999);
-        
-        const aylikKazancVerisi = await tumDoktorlarinAylikKazanciniGetir();
+    async index(req, res) {
+        try {
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const threeDaysLater = new Date();
+            threeDaysLater.setDate(today.getDate() + 3);
+            threeDaysLater.setHours(23, 59, 59, 999);
+            
+            const doktorKazancListesi = await tumDoktorlarinToplamKazanciniGetir();
+            const aylikKazancVerisi = await tumDoktorlarinAylikKazanciniGetir();
 
-        
-        const yaklasanlar = await m_hasta
-            .find({
-                randevu_tarih: {
-                    $gte: today,
-                    $lte: threeDaysLater
-                }
-            })
-            .populate('doktor')
-            .populate({ path: 'islem.islem', model: 'islem' })
-            .sort({ randevu_tarih: 1 });
+            
+            const yaklasanlar = await m_hasta
+                .find({
+                    randevu_tarih: {
+                        $gte: today,
+                        $lte: threeDaysLater
+                    }
+                })
+                .populate('doktor')
+                .populate({ path: 'islem.islem', model: 'islem' })
+                .sort({ randevu_tarih: 1 });
 
-        const hatirlatilacak_hastalar = await m_hasta.find({  hatirlaticitarih: { $ne: null,  }  })
-            .populate('doktor')
-            .populate({ path: 'islem.islem', model: 'islem' }).sort({ hatirlaticitarih: 1 });
+            const hatirlatilacak_hastalar = await m_hasta.find({  hatirlaticitarih: { $ne: null,  }  })
+                .populate('doktor')
+                .populate({ path: 'islem.islem', model: 'islem' }).sort({ hatirlaticitarih: 1 });
+            
+            
 
-        return res.render('pages/admin/index', { 
-            ...g_json("Admin", req),
-            yaklasanlar,
-            aylikKazancVerisi,
-            hatirlatilacak_hastalar
-        });
+            return res.render('pages/admin/index', { 
+                ...g_json("Admin", req),
+                yaklasanlar,
+                aylikKazancVerisi,
+                hatirlatilacak_hastalar,
+                doktorKazancListesi
+            });
 
-    } catch (error) {
-        c_log("ADMIN INDEX", error);
-        return res.redirect('/Admin');
+        } catch (error) {
+            c_log("ADMIN INDEX", error);
+            return res.redirect('/Admin');
+        }
     }
-}
     //HASTALAR
     async hastalar(req, res) {
         try {

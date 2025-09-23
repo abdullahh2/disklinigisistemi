@@ -117,22 +117,16 @@ block content
                                 tr.text-center
                                     th #
                                     th Doktor Adı
-                                    th Ay
                                     th Toplam Kazandığı\nPara
-
-                                    th İşlemler
                             tbody
-                                tr
-                                    th 1
-                                    th Onur YOLBAŞ
-                                    td Faik TURHAN
-                                    td Test hastalık adı
+                                // Backend'den gelen 'doktorKazancListesi' dizisini döngüye alıyoruz
+                                each doktor, i in doktorKazancListesi
+                                    tr
+                                        th= (i + 1)
+                                        th= doktor.name
+                                        td.text-center #{doktor.totalKazanc} ₺
 
-                                    td
-                                        button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
-                                            i.bx.bx-edit
-                                        button.btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1
-                                            i.bx.bx-trash
+
 
 
     .row
@@ -150,23 +144,13 @@ block content
                         canvas#gelirGider
 
                 .row.row-cols-1.row-cols-md-3.row-cols-xl-3.g-0.row-group.text-center.border-top
-                    .col
-                        .p-3
-                            h5.mb-0 2.239.342₺
-                            small.mb-0
-                                | Servet
 
-                    .col
-                        .p-3
-                            h5.mb-0 134.234₺
-                            small.mb-0
-                                | Onur 
-
-                    .col
-                        .p-3
-                            h5.mb-0 325.321₺
-                            small.mb-0
-                                | Sedat 
+                    each doktor in doktorKazancListesi
+                        .col
+                            .p-3
+                                h5.mb-0 #{doktor.totalKazanc}₺
+                                small.mb-0
+                                    | #{doktor.name}
 
 block csscode
     link(href='assets/plugins/datatable/css/dataTables.bootstrap5.min.css' rel='stylesheet')
