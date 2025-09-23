@@ -1,6 +1,5 @@
 extends ../../../layout
 
-
 block content
     .row
         .col-12.col-md-10.d-flex.mx-auto
@@ -13,7 +12,6 @@ block content
                             a.btn.btn-sm.btn-outline-primary(href="/Admin/Doktor/Ekle")
                                 i.bx.bx-plus-circle.font-22
                                 | Doktor Ekle
-
                 .card-body
                     .table-responsive
                         table.table.align-middle.mb-0.table-striped.table-bordered.dataTable.nowrap-disabled#hastalar
@@ -22,24 +20,49 @@ block content
                                     th #
                                     th Doktor Adı                                    
                                     th Telefon
-                                    th İşlemler
+                                    if (is_super)
+                                        th İşlemler
                             tbody
-
                                 each doktor, i in doktorlar
-
-
                                     tr
-                                        th= (i+1)
-                                        th= doktor.name
+                                        td= (i+1)
+                                        td= doktor.name
                                         td= doktor.phone
-                                        td.text-center
-                                            button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
-                                                i.bx.bx-edit
-                                            button(data-doktor-id= doktor._id).btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1.doktor-sil
-                                                i.bx.bx-trash
+                                        if (is_super)
+                                            td.text-center
+                                                //- DÜZENLEME BUTONU GÜNCELLENDİ
+                                                //- data-* attribute'leri ile doktorun bilgilerini butona ekledik.
+                                                //- Yeni bir class ekledik: doktor-duzenle
+                                                button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1.doktor-duzenle(data-bs-toggle="modal" data-bs-target="#editDoctorModal" data-doktor-id=doktor._id data-doktor-name=doktor.name data-doktor-phone=doktor.phone)
+                                                    i.bx.bx-edit
+                                                button(data-doktor-id= doktor._id).btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1.doktor-sil
+                                                    i.bx.bx-trash
 
-
-
+    //- YENİ EKLENEN MODAL KISMI
+    if (is_super)
+        #editDoctorModal.modal.fade(tabindex="-1" aria-labelledby="editDoctorModalLabel" aria-hidden="true")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h5.modal-title#editDoctorModalLabel Doktor Bilgilerini Düzenle
+                        button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+                    .modal-body
+                        //- Düzenleme Formu
+                        form#editDoctorForm(method="POST" action="/Admin/Doktor/Guncelle")
+                            //- Gizli input ile doktorun ID'sini form içinde tutuyoruz
+                            input(type="hidden" name="doktorid" id="editDoktorId")
+                            .mb-3
+                                label.form-label(for="editDoktorName") Doktor Adı
+                                input.form-control(type="text" id="editDoktorName" name="name" required)
+                            .mb-3
+                                label.form-label(for="editDoktorPhone") Telefon
+                                input.form-control(type="text" id="editDoktorPhone" name="phone")
+                            .mb-3
+                                label.form-label(for="editDoktorPassword") Yeni Parola
+                                input.form-control(type="password" id="editDoktorPassword" name="password")
+                    .modal-footer
+                        button.btn.btn-secondary(type="button" data-bs-dismiss="modal") Kapat
+                        button.btn.btn-primary(type="submit" form="editDoctorForm") Değişiklikleri Kaydet
 
 block csscode
     link(href="/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet")
@@ -54,8 +77,9 @@ block jscode
     script(src="/assets/plugins/datatable/js/dataTables.bootstrap5.min.js")
     script.
         $(document).ready(function (){
+            // Mevcut Silme Kodu
             $('.doktor-sil').on('click', function () {
-                var doktorId = $(this).attr('data-doktor-id');
+                var doktorId = $(this).data('doktor-id'); // .attr yerine .data() kullanmak daha iyidir
                 var url = '/Admin/Doktor/Sil';
                 var sor = confirm('Bu doktoru silmek istiyor musunuz?');
                 if (sor) {
@@ -71,6 +95,39 @@ block jscode
                     });
                 }
             });
+
+            // YENİ EKLENEN DÜZENLEME KODU
+            // 1. Modal Açıldığında verileri doldurma
+            $('.doktor-duzenle').on('click', function () {
+                var doktorId = $(this).data('doktor-id');
+                var doktorName = $(this).data('doktor-name');
+                var doktorPhone = $(this).data('doktor-phone');
+
+                // Modal içerisindeki form elemanlarının değerlerini ayarlıyoruz
+                $('#editDoktorId').val(doktorId);
+                $('#editDoktorName').val(doktorName);
+                $('#editDoktorPhone').val(doktorPhone);
+                $('#editDoktorPassword').val("");
+            });
+
+            // 2. Form gönderildiğinde AJAX ile veriyi sunucuya gönderme
+            $('#editDoctorForm').on('submit', function (e) {
+                e.preventDefault(); // Formun normal şekilde gönderilmesini engelle
+
+                $.ajax({
+                    url: '/Admin/Doktor/Guncelle', // Backend'de bu adreste bir route oluşturmalısınız
+                    type: 'POST',
+                    data: $(this).serialize(), // Formdaki tüm verileri (id, name, phone) gönderir
+                    success: function (result) {
+                        $('#editDoctorModal').modal('hide'); // Başarılı olursa modalı kapat
+                        location.reload(); // Sayfayı yenileyerek güncel verileri göster
+                    },
+                    error: function () {
+                        alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+                    }
+                });
+            });
+
 
             $('#hastalar').DataTable({
                 lengthChange: false,

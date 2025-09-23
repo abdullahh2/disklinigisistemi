@@ -5,6 +5,8 @@ const tumDoktorlarinAylikKazanciniGetir = require('../../helpers/kazanc_hesapla'
 const m_admin = require('../../models/m_admin');
 const m_hasta = require('../../models/m_hasta');
 const m_islem = require('../../models/m_islem');
+
+const conf = require('dotenv').config();
 class AdminRoute {
    
 async index(req, res) {
@@ -81,9 +83,9 @@ async index(req, res) {
     async doktor(req, res) {
 
         try {
-            
+            const is_super = req.payload.phone == process.env.ADMIN_PHONE;
             const doktorlar = await m_admin.find();
-            res.render('pages/admin/doktor/index', { ...g_json("Doktorlar", req), doktorlar: doktorlar});
+            res.render('pages/admin/doktor/index', { ...g_json("Doktorlar", req), doktorlar: doktorlar, is_super});
         } catch (error) {
             c_log("ADMIN DOKTOR", error);
             return res.redirect('/Admin/Login');
@@ -118,11 +120,8 @@ async index(req, res) {
 
     //AUTH
     login(req, res) {
-        res.render('pages/admin/auth/login', { err: null });
-    }
 
-    forgotPassword(req, res) {
-      res.render('pages/admin/auth/forgot_pass');
+        res.render('pages/admin/auth/login', { title: process.env.SYSTEM_NAME, favicon: process.env.FAVICON, err: null });
     }
 
     async postLogout(req, res) {

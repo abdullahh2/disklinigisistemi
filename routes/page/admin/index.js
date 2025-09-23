@@ -20,12 +20,15 @@ router.get('/Doktor', route.doktor);
 router.get('/Doktor/Ekle', route.doktorEkle);
 router.post('/Doktor/Ekle', proccs.doktorEkle);
 router.post('/Doktor/Sil', proccs.doktorSil);
+router.post('/Doktor/Guncelle', proccs.doktorGuncelle);
 
 // İŞLEMLER
 router.get('/Islem', route.islem);
 router.get('/Islem/Ekle', route.islemEkle);
 router.post('/Islem/Ekle', proccs.islemEkle);
 router.post('/Islem/Sil', proccs.islemSil);
+router.get('/Islem/:id', proccs.islemDetayGetir);
+router.post('/Islem/Guncelle', proccs.islemGuncelle);
 
 // AUTH
 router.post('/Logout', route.postLogout);

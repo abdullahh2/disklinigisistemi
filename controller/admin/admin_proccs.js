@@ -17,6 +17,7 @@ class AdminProccs {
 
             const token = jwt.sign({
                 name: user.name,
+                phone: user.phone,
                 userid: user._id
             }, process.env.SECRET_KEY);
             res.cookie('token', token);
@@ -55,6 +56,21 @@ class AdminProccs {
         }
     }
 
+    async doktorGuncelle(req, res) {
+        try {
+            const { doktorid, name, phone, password } = req.body;
+            if(password == "" && name != "" && phone != "")
+                await m_admin.findByIdAndUpdate(doktorid, { name, phone });
+            else if(password != "" && name != "" && phone != "")
+                await m_admin.findByIdAndUpdate(doktorid, { name, phone, password: WRXcrypt(password) });
+            
+
+            return res.redirect('/Admin/Doktor');
+        } catch (error) {
+            c_log("DOKTOR GUNCELLE ADMIN", error);
+        }
+    }
+
     async islemEkle(req, res) {
         try {
             const islem = new m_islem({
@@ -75,6 +91,27 @@ class AdminProccs {
             return res.redirect('/Admin/Islem');
         } catch (error) {
             c_log("ISLEM SIL ADMIN", error);
+        }
+    }
+
+    async islemDetayGetir(req, res) {
+        try {
+            const islem = await m_islem.findById(req.params.id);
+            res.json(islem);
+        } catch (error) {
+            c_log("ISLEM DETAY GETIR ADMIN", error);
+            res.status(500).send("Sunucu hatası");
+        }
+    }
+
+    async islemGuncelle(req, res) {
+        try {
+            const { islemid, ad, ucret, hatirlatici } = req.body;
+            await m_islem.findByIdAndUpdate(islemid, { ad, ucret, hatirlatici });
+            return res.redirect('/Admin/Islem');
+        } catch (error) {
+            c_log("ISLEM GUNCELLE ADMIN", error);
+            return res.redirect('/Admin/Islem');
         }
     }
 

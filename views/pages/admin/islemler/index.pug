@@ -35,7 +35,7 @@ block content
                                         else
                                             td.text-center.text-danger Yok
                                         td.text-center
-                                            button.btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1
+                                            button(data-bs-toggle="modal" data-bs-target="#islemDuzenleModal" data-islem-id=islem._id).btn.btn-outline-primary.px-5.radius-30.btn-sm.m-1.islem-duzenle
                                                 i.bx.bx-edit
 
                                             button(data-islem-id= islem._id).btn.btn-outline-danger.px-5.radius-30.btn-sm.m-1.islem-sil
@@ -45,6 +45,30 @@ block content
 
 
 
+
+    .modal.fade#islemDuzenleModal(tabindex="-1" aria-labelledby="islemDuzenleModalLabel" aria-hidden="true")
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    h5.modal-title#islemDuzenleModalLabel İşlem Düzenle
+                    button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+                .modal-body
+                    form#islemDuzenleForm(method="POST" action="/Admin/Islem/Guncelle")
+                        input#islemId(type="hidden" name="islemid")
+                        .mb-3
+                            label.form-label(for="islemAd") İşlem Adı
+                            input#islemAd.form-control(type="text" name="ad" required)
+                        .mb-3
+                            label.form-label(for="islemUcret") İşlem Ücreti
+                            input#islemUcret.form-control(type="number" name="ucret" required)
+                        .mb-3
+                            label.form-label(for="islemHatirlatici") Hatırlatıcı
+                            select#islemHatirlatici.form-select(name="hatirlatici")
+                                option(value="1") Var
+                                option(value="0") Yok
+                        .modal-footer
+                            button.btn.btn-secondary(type="button" data-bs-dismiss="modal") Kapat
+                            button.btn.btn-primary(type="submit") Kaydet
 
 block csscode
     link(href="/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet")
@@ -64,6 +88,20 @@ block jscode
                 language: {
                     url: "https://cdn.datatables.net/plug-ins/2.3.2/i18n/tr.json",
                 },
+            });
+
+            $('.islem-duzenle').on('click', function() {
+                var islemId = $(this).data('islem-id');
+                $.ajax({
+                    url: '/Admin/Islem/' + islemId,
+                    type: 'GET',
+                    success: function(islem) {
+                        $('#islemId').val(islem._id);
+                        $('#islemAd').val(islem.ad);
+                        $('#islemUcret').val(islem.ucret);
+                        $('#islemHatirlatici').val(islem.hatirlatici ? '1' : '0');
+                    }
+                });
             });
 
             $('.islem-sil').on('click', function(){

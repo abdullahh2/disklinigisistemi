@@ -3,7 +3,7 @@ header
         nav.navbar.navbar-expand.gap-3
             a(href='/Admin').topbar-logo-header.d-none.d-lg-flex.border-0
                 div
-                    img.logo-icon(src='/assets/images/logo-icon.png' alt='logo icon')
+                    img.logo-icon(src='/assets/images/logo-icon.png' alt='logo icon').bg-dark.rounded
                 div
                     h4.logo-text Servet Toprak
             .mobile-toggle-menu.d-block.d-lg-none(data-bs-toggle='offcanvas' data-bs-target='#offcanvasNavbar')
@@ -14,13 +14,13 @@ header
 
             .user-box.dropdown.px-3
                 a.d-flex.align-items-center.nav-link.dropdown-toggle.gap-3.dropdown-toggle-nocaret(href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false')
-                    img.user-img(src='/assets/images/avatars/avatar-1.png' alt='user avatar')
+                    img.user-img(src='/assets/images/favicon-32x32.png' alt='user avatar')
                     .user-info
                         p.user-name.mb-0= name
 
                 ul.dropdown-menu.dropdown-menu-end
                     li
-                        a.dropdown-item.d-flex.align-items-center(href='javascript:;')
+                        a.dropdown-item.d-flex.align-items-center(href='/Admin/Doktor')
                             i.bx.bx-user.fs-5
                             span Profil
                     li
