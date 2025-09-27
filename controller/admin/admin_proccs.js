@@ -236,52 +236,71 @@ class AdminProccs {
 
     async hastaGuncelle(req, res) {
         try {
-            const { 
-                hastaid, adsoyad, tel, randevutarih, doktor: yeniDoktorId, 
-                ucret: yeniUcret, odenenucret: yeniOdenenUcret, aciklama, hatirlaticitarih 
+            const {
+                hastaid, adsoyad, tel, randevutarih, doktor: yeniDoktorId,
+                odenenucret: yeniOdenenUcret, aciklama, hatirlaticitarih
             } = req.body;
+            const guncelIslemler = req.body.islemler;
 
-            // 1. Güncellenecek hastanın mevcut durumunu bul
-            const mevcutHasta = await m_hasta.findById(hastaid);
+            const mevcutHasta = await m_hasta.findById(hastaid).populate('islem.islem');
             if (!mevcutHasta) {
-                // req.flash('error', 'Hasta bulunamadı.');
                 return res.redirect('/Admin/Hastalar');
             }
 
+            let yeniToplamUcret = 0;
+            const yeniIslemListesi = [];
+            
+            if (guncelIslemler) {
+                const islemIdleri = Object.keys(guncelIslemler);
+                const islemDetaylari = await m_islem.find({ '_id': { $in: islemIdleri } });
+                const islemMap = new Map(islemDetaylari.map(i => [i._id.toString(), i]));
+
+                for (const islemId of islemIdleri) {
+                    const islemDetay = islemMap.get(islemId);
+                    if (islemDetay) {
+                        const adet = parseInt(guncelIslemler[islemId].adet, 10);
+                        if (adet > 0) {
+                            yeniToplamUcret += islemDetay.ucret * adet;
+                            yeniIslemListesi.push({ islem: islemId, adet: adet });
+                        }
+                    }
+                }
+            }
+
             const eskiDoktorId = mevcutHasta.doktor.toString();
-            const eskiUcret = mevcutHasta.odenen_ucret;
+            const eskiOdenenUcret = mevcutHasta.odenen_ucret;
             const eskiRandevuTarih = mevcutHasta.randevu_tarih;
 
-            
             const doktorDegisti = eskiDoktorId !== yeniDoktorId;
-            const ucretDegisti = eskiUcret !== parseFloat(yeniOdenenUcret);
+            const odenenUcretDegisti = eskiOdenenUcret !== parseFloat(yeniOdenenUcret);
 
-            if (doktorDegisti || ucretDegisti) {
-                await this.doktorKazancGuncelle(eskiDoktorId, -eskiUcret, new Date(eskiRandevuTarih));
+            if (doktorDegisti || odenenUcretDegisti) {
+                await this.doktorKazancGuncelle(eskiDoktorId, -eskiOdenenUcret, new Date(eskiRandevuTarih));
                 await this.doktorKazancGuncelle(yeniDoktorId, parseFloat(yeniOdenenUcret), new Date(randevutarih));
             }
 
-            
             const guncellenecekVeri = {
                 adsoyad,
                 tel,
                 randevu_tarih: randevutarih,
                 doktor: yeniDoktorId,
-                ucret: yeniUcret,
                 odenen_ucret: yeniOdenenUcret,
                 aciklama,
                 ...(hatirlaticitarih && { hatirlaticitarih })
             };
-            
+
+            // If there are any treatments, always update the price and the treatment list.
+            // If guncelIslemler is empty/null, it means all treatments were removed.
+            guncellenecekVeri.ucret = yeniToplamUcret;
+            guncellenecekVeri.islem = yeniIslemListesi;
+
             await m_hasta.findByIdAndUpdate(hastaid, guncellenecekVeri);
 
             c_log("HASTA GÜNCELLENDİ", `Hasta ID: ${hastaid}`);
-            // req.flash('success', 'Hasta başarıyla güncellendi.');
             return res.redirect('/Admin/Hastalar');
 
         } catch (error) {
             c_log("HASTA GÜNCELLEME HATASI", error);
-            // req.flash('error', 'Hasta güncellenirken bir hata oluştu.');
             return res.redirect('/Admin/Hastalar');
         }
     }

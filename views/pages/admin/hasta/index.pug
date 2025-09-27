@@ -99,6 +99,8 @@ block content
                                                 i.bx.bx-edit
                                             button(data-id=hasta._id).btn.btn-outline-danger.btn-sm.m-1.hasta-sil
                                                 i.bx.bx-trash
+                                            button.btn.btn-sm.btn-outline-secondary.ms-1.print-hasta-btn(data-hasta=JSON.stringify(hasta))
+                                                i.bx.bx-printer
 
 
             // MODAL HTML YAPISI (GÜNCELLENDİ)
@@ -111,7 +113,7 @@ block content
                         .modal-body
                             //- YENİ: Modal içine işlem listesini göstermek için alan eklendi
                             h6.mb-2 Seçili İşlemler
-                            #edit-islem-listesi.mb-3.p-2.border.rounded
+                            #edit-islem-listesi.mb-3
                                 //- Bu alan JavaScript ile doldurulacak
                             hr
 
@@ -140,7 +142,7 @@ block content
                                 .row.mb-3
                                     .col-md-6
                                         label(for="edit-ucret") Toplam Ücret
-                                        input#edit-ucret.form-control(type="number" name="ucret" required)
+                                        input#edit-ucret.form-control(type="number" name="ucret" required readonly)
                                     .col-md-6
                                         label(for="edit-odenenucret") Ödenen Miktar
                                         input#edit-odenenucret.form-control(type="number" name="odenenucret" required)
@@ -240,22 +242,121 @@ block jscode
 
                 // 2. Modal içindeki işlem listesini doldur
                 const islemListesiAlani = $('#edit-islem-listesi');
-                islemListesiAlani.empty(); // Önceki verileri temizle
+                islemListesiAlani.empty();
 
                 if (islemler && islemler.length > 0) {
-                    let islemHtml = '<ul class="list-group">';
-                    islemler.forEach(function(isl) {
-                        // ÖNEMLİ KONTROL: İşlemin var olup olmadığını kontrol et
+                    let islemHtml = '';
+                    islemler.forEach(function(isl, index) {
                         if (isl.islem) {
-                            islemHtml += `<li class="list-group-item">${isl.islem.ad} (${isl.adet} adet)</li>`;
+                            islemHtml += `
+                                <div class="row mb-2 align-items-center">
+                                    <div class="col-md-6">
+                                        <label for="islem-adet-${index}">${isl.islem.ad}</label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input class="form-control islem-adet-input" type="number" id="islem-adet-${index}" name="islemler[${isl.islem._id}][adet]" value="${isl.adet}" min="1" data-ucret="${isl.islem.ucret}">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-sm btn-outline-danger remove-islem-btn" type="button" data-islem-id="${isl.islem._id}">
+                                            <i class="bx bx-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="islemler[${isl.islem._id}][original_adet]" value="${isl.adet}">
+                            `;
                         } else {
-                            islemHtml += `<li class="list-group-item text-danger">Silinmiş İşlem (${isl.adet} adet)</li>`;
+                            islemHtml += '<p class="text-danger">Silinmiş bir işlem kaydı bulundu.</p>';
                         }
                     });
-                    islemHtml += '</ul>';
                     islemListesiAlani.html(islemHtml);
                 } else {
                     islemListesiAlani.html('<p class="text-muted">Bu hastaya atanmış işlem bulunmamaktadır.</p>');
                 }
+            });
+
+            // Fiyatı dinamik olarak güncelle
+            $(document).on('input', '.islem-adet-input', function() {
+                let totalUcret = 0;
+                $('.islem-adet-input').each(function() {
+                    const adet = parseInt($(this).val()) || 0;
+                    const ucret = parseFloat($(this).data('ucret')) || 0;
+                    totalUcret += adet * ucret;
+                });
+                $('#edit-ucret').val(totalUcret);
+            });
+
+            // İşlemi sil
+            $(document).on('click', '.remove-islem-btn', function() {
+                $(this).closest('.row').remove();
+                // Fiyatı yeniden hesapla
+                $('.islem-adet-input').trigger('input');
+            });
+
+            $(document).on('click', '.print-hasta-btn', function() {
+                const hastaData = $(this).data('hasta');
+                let printContent = `
+                    <style>
+                        @media print {
+                            body * { visibility: hidden; }
+                            #print-area, #print-area * { visibility: visible; font-family: Times New Roman; }
+                            #print-area { position: absolute; left: 0; top: 0; width: 100%; }
+                            table { width: 100%; border-collapse: collapse; }
+                            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                            th { background-color: #f2f2f2; }
+                            h2, h3 { text-align: center; }
+                        }
+                    </style>
+                    <div id="print-area">
+
+
+                        <div class="mb-5">
+                            <h2 class="fw-bold">#{system_name}</h2>
+                        </div>
+
+                            <h4> <strong>Hasta Adı Soyadı:</strong> ${hastaData.adsoyad}</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>İşlem</th>
+                                        <th>Adet</th>
+                                        <th>Birim Fiyat</th>
+                                        <th>Toplam Fiyat</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                `;
+
+                let toplamUcret = 0;
+                hastaData.islem.forEach(isl => {
+                    if (isl.islem) {
+                        const islemToplam = isl.adet * isl.islem.ucret;
+                        toplamUcret += islemToplam;
+                        printContent += `
+                            <tr>
+                                <td>${isl.islem.ad}</td>
+                                <td>${isl.adet}</td>
+                                <td>${isl.islem.ucret.toLocaleString('tr-TR')} ₺</td>
+                                <td>${islemToplam.toLocaleString('tr-TR')} ₺</td>
+                            </tr>
+                        `;
+                    }
+                });
+
+                printContent += `
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="3" style="text-align:right;">Genel Toplam:</th>
+                            <th>${toplamUcret.toLocaleString('tr-TR')} ₺</th>
+                        </tr>
+                    </tfoot>
+                        </table>
+                        <h3>#{print_msj}</h3>
+                    </div>
+                `;
+
+                $('body').append(printContent);
+                window.print();
+                $('#print-area').remove();
             });
         });

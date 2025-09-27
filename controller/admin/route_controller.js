@@ -57,7 +57,9 @@ class AdminRoute {
     //HASTALAR
     async hastalar(req, res) {
         try {
-            
+            const resim = process.env.IMG;
+            const system_name = process.env.SYSTEM_NAME;
+            const print_msj = process.env.PRINT_MESSAGE;
             // İki veriyi aynı anda, paralel olarak çekiyoruz
             const [hastalar, doktorlar] = await Promise.all([
                 m_hasta.find().populate('doktor').populate({ path: 'islem.islem', model: 'islem' }).sort({ randevu_tarih: -1 }),
@@ -67,7 +69,10 @@ class AdminRoute {
             return res.render('pages/admin/hasta/index', { 
                 ...g_json("Hastalar", req), 
                 hastalar, 
-                doktorlar // Doktor listesini view'e gönderiyoruz
+                doktorlar,
+                resim,
+                system_name,
+                print_msj
             });
         } catch (error) {
             c_log("ADMIN HASTALAR", error);
