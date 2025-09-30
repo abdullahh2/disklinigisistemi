@@ -112,14 +112,15 @@ block content
                             button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
                         .modal-body
                             //- YENİ: Modal içine işlem listesini göstermek için alan eklendi
-                            h6.mb-2 Seçili İşlemler
-                            #edit-islem-listesi.mb-3
-                                //- Bu alan JavaScript ile doldurulacak
-                            hr
-
                             form#editHastaForm(method="POST" action="/Admin/Hastalar/Guncelle")
                                 // Gizli input, hangi hastayı güncellediğimizi bilmek için
                                 input#edit-hasta-id(type="hidden" name="hastaid")
+
+                                //- YENİ: Modal içine işlem listesini göstermek için alan eklendi
+                                h6.mb-2 Seçili İşlemler
+                                #edit-islem-listesi.mb-3
+                                    //- Bu alan JavaScript ile doldurulacak
+                                hr
 
                                 .row.mb-3
                                     .col-md-6
@@ -249,20 +250,19 @@ block jscode
                     islemler.forEach(function(isl, index) {
                         if (isl.islem) {
                             islemHtml += `
-                                <div class="row mb-2 align-items-center">
+                                <div class="row mb-2 align-items-center islem-satiri">
                                     <div class="col-md-6">
                                         <label for="islem-adet-${index}">${isl.islem.ad}</label>
                                     </div>
                                     <div class="col-md-4">
-                                        <input class="form-control islem-adet-input" type="number" id="islem-adet-${index}" name="islemler[${isl.islem._id}][adet]" value="${isl.adet}" min="1" data-ucret="${isl.islem.ucret}">
+                                        <input class="form-control islem-adet-input" type="number" id="islem-adet-${index}" name="islemler[${isl.islem._id}][adet]" value="${isl.adet}" min="0" data-ucret="${isl.islem.ucret}">
                                     </div>
                                     <div class="col-md-2">
-                                        <button class="btn btn-sm btn-outline-danger remove-islem-btn" type="button" data-islem-id="${isl.islem._id}">
+                                        <button class="btn btn-sm btn-outline-danger remove-islem-btn" type="button">
                                             <i class="bx bx-trash"></i>
                                         </button>
                                     </div>
                                 </div>
-                                <input type="hidden" name="islemler[${isl.islem._id}][original_adet]" value="${isl.adet}">
                             `;
                         } else {
                             islemHtml += '<p class="text-danger">Silinmiş bir işlem kaydı bulundu.</p>';
@@ -287,7 +287,9 @@ block jscode
 
             // İşlemi sil
             $(document).on('click', '.remove-islem-btn', function() {
-                $(this).closest('.row').remove();
+                const islemSatiri = $(this).closest('.islem-satiri');
+                islemSatiri.find('.islem-adet-input').val(0);
+                islemSatiri.hide();
                 // Fiyatı yeniden hesapla
                 $('.islem-adet-input').trigger('input');
             });
