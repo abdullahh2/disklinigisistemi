@@ -35,7 +35,10 @@ block content
                                 each randevu, i in yaklasanlar
                                     tr
                                         th= (i + 1)
-                                        th= randevu.doktor.name
+                                        if randevu.doktor
+                                            th= randevu.doktor.name
+                                        else
+                                            th.text-danger Silinmiş Doktor
                                         td= randevu.adsoyad
                                         td= randevu.islem.ad
                                         td= formatlaTarih(randevu.randevu_tarih)
@@ -80,7 +83,10 @@ block content
                                 each randevu, i in hatirlatilacak_hastalar
                                     tr
                                         th= (i + 1)
-                                        th= randevu.doktor.name
+                                        if randevu.doktor
+                                            th= randevu.doktor.name
+                                        else
+                                            th.text-danger Silinmiş Doktor
                                         td= randevu.adsoyad
                                         td= randevu.islem.ad
                                         td= formatlaTarih(randevu.randevu_tarih)

@@ -56,7 +56,10 @@ block content
                                 each hasta, i in hastalar
                                     tr
                                         td.text-center= (i+1)
-                                        td= hasta.doktor.name
+                                        if hasta.doktor
+                                            td= hasta.doktor.name
+                                        else
+                                            td.text-danger Silinmiş Doktor
                                         td= hasta.adsoyad
                                         td
                                             ul.list-unstyled.mb-0
@@ -89,7 +92,7 @@ block content
                                                 data-id=hasta._id
                                                 data-adsoyad=hasta.adsoyad
                                                 data-tel=hasta.tel
-                                                data-doktor-id=hasta.doktor._id
+                                                data-doktor-id=hasta.doktor ? hasta.doktor._id : ''
                                                 data-randevu=hasta.randevu_tarih
                                                 data-ucret=hasta.ucret
                                                 data-odenen=hasta.odenen_ucret

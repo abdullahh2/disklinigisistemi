@@ -49,7 +49,14 @@ class AdminProccs {
         try {
             if(req.body.doktorid == req.payload.userid)
                 return res.redirect('/Admin/Doktor');
-            await m_admin.findByIdAndDelete(req.body.doktorid);
+            const doktorId = req.body.doktorid;
+
+            // İlgili doktoru sil
+            await m_admin.findByIdAndDelete(doktorId);
+
+            // Bu doktora atanmış tüm hastaların 'doktor' alanını null yap
+            await m_hasta.updateMany({ doktor: doktorId }, { $set: { doktor: null } });
+
             return res.redirect('/Admin/Doktor');
         } catch (error) {
             c_log("DOKTOR SIL ADMIN", error);
