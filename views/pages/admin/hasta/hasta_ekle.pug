@@ -49,7 +49,7 @@ block content
                                     span(title="Zorunlu").text-danger *
                                 select#doktor(name="doktor").form-control
                                     each doktor in doktorlar
-                                        option(value=doktor._id) #{doktor.name}
+                                        option(value=doktor._id selected=user==doktor._id) #{doktor.name}
                             .col-12.col-md-3.mb-2.mb-md-0
                                 label(for="randevutarih")
                                     | Randevu Saati

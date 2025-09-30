@@ -294,7 +294,8 @@ block jscode
                 $('.islem-adet-input').trigger('input');
             });
 
-            $(document).on('click', '.print-hasta-btn', function() {
+            $(document).on('click', '.print-hasta-btn', async function() {
+                let print_msj = await prompt("Baskı için mesaj giriniz.");
                 const hastaData = $(this).data('hasta');
                 let printContent = `
                     <style>
@@ -353,7 +354,12 @@ block jscode
                         </tr>
                     </tfoot>
                         </table>
-                        <h3>#{print_msj}</h3>
+                        <div class="mt-3 align-items-start" style="font-size: 24pt;">
+                            <strong>Doktor Notu: </strong> ${print_msj}
+                        </div>
+
+
+
                     </div>
                 `;
 
