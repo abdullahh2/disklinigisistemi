@@ -20,7 +20,14 @@ class AdminProccs {
                 phone: user.phone,
                 userid: user._id
             }, process.env.SECRET_KEY);
-            res.cookie('token', token);
+            res.cookie('token', token, {
+                httpOnly: true,          // JS erişemesin (tercih edilir)
+                secure: false,           // HTTP (localhost) için zorunlu: false
+                sameSite: 'lax',         // dev için en sorunsuzu
+                path: '/',               // tüm sitede geçerli
+                maxAge: 24 * 60 * 60 * 1000
+            });
+
             
             res.render('pages/admin/index', { title: 'Admin', name: user.name });
             return res.redirect('/Admin');
