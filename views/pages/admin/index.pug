@@ -57,7 +57,7 @@ block content
                         h6.mb-0 Hatırlatılacak Randevular
                 .card-body
                     .table-responsive
-                        table.table.align-middle.mb-0#randevuYak
+                        table.table.align-middle.mb-0#hastaAlimTab
                             thead.table-light
                                 tr.text-center
                                     th #
@@ -88,8 +88,11 @@ block content
                                         else
                                             th.text-danger Silinmiş Doktor
                                         td= randevu.adsoyad
-                                        td= randevu.islem.ad
-                                        td= formatlaTarih(randevu.randevu_tarih)
+
+                                        td
+                                            each isl in randevu.islem
+                                                | #{isl.islem.ad}(#{isl.adet}) <br>
+                                        td= formatlaTarih(randevu.hatirlaticitarih)
                                         td= randevu.tel
                                         if (randevu.ucret - randevu.odenen_ucret) > 0
                                             td.bg-danger.text-white.text-center #{randevu.ucret - randevu.odenen_ucret} ₺
@@ -104,11 +107,11 @@ block content
                 .card-header
                     .d-flex.align-items-center
                     div
-                        h6.mb-0 Hasta Alım Tablosu
+                        h6.mb-0 Doktor Kazançlar
 
                 .card-body
                     .table-responsive
-                        table.table.align-middle.mb-0#hastaAlimTab
+                        table.table.align-middle.mb-0#doktorKazanc
                             thead.table-light
                                 tr.text-center
                                     th #
