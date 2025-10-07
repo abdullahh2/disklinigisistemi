@@ -16,9 +16,9 @@ class AdminRoute {
             
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            const threeDaysLater = new Date();
-            threeDaysLater.setDate(today.getDate() + 3);
-            threeDaysLater.setHours(23, 59, 59, 999);
+            const oneWeekLater = new Date();
+            oneWeekLater.setDate(today.getDate() + 7);
+            oneWeekLater.setHours(23, 59, 59, 999);
             
             const doktorKazancListesi = await tumDoktorlarinToplamKazanciniGetir();
             const aylikKazancVerisi = await tumDoktorlarinAylikKazanciniGetir();
@@ -28,7 +28,7 @@ class AdminRoute {
                 .find({
                     randevu_tarih: {
                         $gte: today,
-                        $lte: threeDaysLater
+                        $lte: oneWeekLater
                     }
                 })
                 .populate('doktor')
