@@ -182,7 +182,7 @@ class AdminProccs {
         try {
             const {
                 adsoyad, islem: islemlerInput, doktor: doktorId, randevutarih,
-                hatirlaticitarih, tel, aciklama, odenenucret
+                hatirlaticitarih, tel, aciklama, odenenucret, ucret
             } = req.body;
 
 
@@ -203,17 +203,17 @@ class AdminProccs {
             }
             
             const islemlerMap = new Map(bulunanIslemler.map(i => [i._id.toString(), i]));
-            let totalUcret = 0;
+            
             const hastaIslemleri = [];
 
             for (const islemId of islemIdleri) {
                 const islemDetay = islemlerMap.get(islemId);
                 const adet = parseInt(islemlerInput[islemId].adet) || 1;
-                totalUcret += islemDetay.ucret * adet;
+                
                 hastaIslemleri.push({ islem: islemId, adet: adet });
             }
             
-            console.log("Hesaplanan Toplam Ücret:", totalUcret);
+            console.log("Hesaplanan Toplam Ücret:", ucret);
 
             const yeniHasta = new m_hasta({
                 adsoyad,
@@ -222,7 +222,7 @@ class AdminProccs {
                 randevu_tarih: randevutarih,
                 tel,
                 aciklama,
-                ucret: totalUcret,
+                ucret,
                 odenen_ucret: odenenucret,
                 ...(hatirlaticitarih && { hatirlaticitarih })
             });

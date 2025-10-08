@@ -8,7 +8,8 @@ const connectionString = env == "local" ? local : online;
 
 
 module.exports = () => {
-    mongoose.connect(connectionString);
+    //mongoose.connect(connectionString);
+    mongoose.connect("mongodb://localhost:27017/DisciSistemi");
     mongoose.connection.on("connected", () => {
         console.log("Connected to MongoDB");
     });
