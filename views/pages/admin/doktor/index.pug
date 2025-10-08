@@ -17,7 +17,7 @@ block content
                         table.table.align-middle.mb-0.table-striped.table-bordered.dataTable.nowrap-disabled#hastalar
                             thead.table-light
                                 tr.text-center
-                                    th #
+                                    
                                     th Doktor Adı                                    
                                     th Telefon
                                     if (is_super)
@@ -25,7 +25,7 @@ block content
                             tbody
                                 each doktor, i in doktorlar
                                     tr
-                                        td= (i+1)
+                                    
                                         td= doktor.name
                                         td= doktor.phone
                                         if (is_super)

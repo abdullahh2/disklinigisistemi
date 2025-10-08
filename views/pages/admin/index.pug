@@ -13,7 +13,7 @@ block content
                         table.table.align-middle.mb-0#randevuYak
                             thead.table-light
                                 tr.text-center
-                                    th #
+                                    
                                     th Doktor Adı
                                     th Hasta Adı
                                     th İşlem
@@ -34,7 +34,7 @@ block content
 
                                 each randevu, i in yaklasanlar
                                     tr
-                                        th= (i + 1)
+                                    
                                         if randevu.doktor
                                             th= randevu.doktor.name
                                         else
@@ -60,7 +60,7 @@ block content
                         table.table.align-middle.mb-0#hastaAlimTab
                             thead.table-light
                                 tr.text-center
-                                    th #
+
                                     th Doktor Adı
                                     th Hasta Adı
                                     th İşlem
@@ -82,7 +82,6 @@ block content
 
                                 each randevu, i in hatirlatilacak_hastalar
                                     tr
-                                        th= (i + 1)
                                         if randevu.doktor
                                             th= randevu.doktor.name
                                         else
@@ -114,14 +113,12 @@ block content
                         table.table.align-middle.mb-0#doktorKazanc
                             thead.table-light
                                 tr.text-center
-                                    th #
                                     th Doktor Adı
                                     th Toplam Kazandığı\nPara
                             tbody
                                 // Backend'den gelen 'doktorKazancListesi' dizisini döngüye alıyoruz
                                 each doktor, i in doktorKazancListesi
                                     tr
-                                        th= (i + 1)
                                         th= doktor.name
                                         td.text-center #{doktor.totalKazanc} ₺
 

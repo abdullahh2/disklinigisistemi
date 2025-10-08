@@ -18,7 +18,7 @@ block content
                         table.table.align-middle.mb-0.table-striped.table-bordered.dataTable.nowrap-disabled#hastalar
                             thead.table-light
                                 tr.text-center
-                                    th #
+                                    
                                     th Doktor Adı
                                     th Hasta Adı
                                     th İşlem
@@ -55,7 +55,6 @@ block content
 
                                 each hasta, i in hastalar
                                     tr
-                                        td.text-center= (i+1)
                                         if hasta.doktor
                                             td= hasta.doktor.name
                                         else

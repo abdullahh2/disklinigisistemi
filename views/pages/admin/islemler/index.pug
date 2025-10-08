@@ -19,7 +19,7 @@ block content
                         table.table.align-middle.mb-0.table-striped.table-bordered.dataTable.nowrap-disabled#islemler
                             thead.table-light
                                 tr.text-center
-                                    th #
+                                    
                                     th İşlem Adı
                                     th İşlem Ücreti
                                     th Hatırlatıcı
@@ -27,7 +27,6 @@ block content
                             tbody
                                 each islem, i in islemler
                                     tr
-                                        th= (i+1)
                                         th= islem.ad
                                         td= islem.ucret
                                         if islem.hatirlatici == "1"
