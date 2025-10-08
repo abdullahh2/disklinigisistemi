@@ -40,7 +40,9 @@ block content
                                         else
                                             th.text-danger Silinmiş Doktor
                                         td= randevu.adsoyad
-                                        td= randevu.islem.ad
+                                        td
+                                            each isl in randevu.islem
+                                                | #{isl.islem.ad}(#{isl.adet}) <br>
                                         td= formatlaTarih(randevu.randevu_tarih)
                                         td= randevu.tel
                                         if (randevu.ucret - randevu.odenen_ucret) > 0
