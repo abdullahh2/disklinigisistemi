@@ -9,7 +9,7 @@ const connectionString = env == "local" ? local : online;
 
 module.exports = () => {
     //mongoose.connect(connectionString);
-    mongoose.connect("mongodb://localhost:27017/DisciSistemi");
+    mongoose.connect("mongodb+srv://klinikerzen:klinikerzen13@klinikerzen.ezip2vj.mongodb.net/?retryWrites=true&w=majority&appName=klinikerzen");
     mongoose.connection.on("connected", () => {
         console.log("Connected to MongoDB");
     });
